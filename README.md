@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div align="center">
 <img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
 </div>
@@ -18,3 +19,6 @@ View your app in AI Studio: https://ai.studio/apps/3273f043-34a0-414d-9c49-06625
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
 3. Run the app:
    `npm run dev`
+=======
+# Banao-FE
+>>>>>>> 9b94adb5e0f8c4c74c722b2ce840c819a62f8892
