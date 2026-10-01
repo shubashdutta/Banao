@@ -1,36 +1,36 @@
-import React, { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import React, { useState } from "react";
+import { ChevronDown } from "lucide-react";
 
 const faqs = [
   {
-    question: 'Which cities in Nepal does Banao currently operate in?',
+    question: "Which cities in Nepal does Banao currently operate in?",
     answer:
-      'Banao currently serves Kathmandu, Lalitpur, and Bhaktapur throughout the Kathmandu Valley, as well as Pokhara. We are expanding to Butwal, Biratnagar, and Chitwan soon. Same-day service is available 7 days a week from 7:00 AM to 9:00 PM.',
+      "Banao currently serves Kathmandu, Lalitpur, and Bhaktapur throughout the Kathmandu Valley, as well as Pokhara. We are expanding to Butwal, Biratnagar, and Chitwan soon. Same-day service is available 7 days a week from 7:00 AM to 9:00 PM.",
   },
   {
-    question: 'How are Banao professionals vetted and verified?',
+    question: "How are Banao professionals vetted and verified?",
     answer:
-      'Every technician and service partner undergoes a 3-step screening: (1) Government citizenship and address verification, (2) Criminal record check with Nepal Police clearance, and (3) Practical trade skills test conducted by our senior master technicians.',
+      "Every technician and service partner undergoes a 3-step screening: (1) Government citizenship and address verification, (2) Criminal record check with Nepal Police clearance, and (3) Practical trade skills test conducted by our senior master technicians.",
   },
   {
-    question: 'Are the prices fixed or will the professional quote extra?',
+    question: "Are the prices fixed or will the professional quote extra?",
     answer:
-      'All inspection and standard labour fees are clearly listed upfront on Banao before you confirm your booking. If spare parts (like water pipes, valves, circuit breakers, or switches) are needed, our pro will provide an itemized quote with standard store receipts before proceeding.',
+      "All inspection and standard labour fees are clearly listed upfront on Banao before you confirm your booking. If spare parts (like water pipes, valves, circuit breakers, or switches) are needed, our pro will provide an itemized quote with standard store receipts before proceeding.",
   },
   {
-    question: 'What if I am unhappy with the repair quality?',
+    question: "What if I am unhappy with the repair quality?",
     answer:
-      'We stand behind every service with our 7-Day Banao Guarantee. If any issue re-occurs within 7 days of completion, we will dispatch another senior professional to re-inspect and fix it free of charge.',
+      "We stand behind every service with our 7-Day Banao Guarantee. If any issue re-occurs within 7 days of completion, we will dispatch another senior professional to re-inspect and fix it free of charge.",
   },
   {
-    question: 'Which payment methods do you accept?',
+    question: "Which payment methods do you accept?",
     answer:
-      'You only pay after the job is completed and inspected. We accept Cash on Delivery, eSewa, Khalti, and Fonepay mobile banking QR scans directly with the technician.',
+      "You only pay after the job is completed and inspected. We accept Cash on Delivery, eSewa, Khalti, and Fonepay mobile banking QR scans directly with the technician.",
   },
   {
-    question: 'Can I request emergency same-day repairs?',
+    question: "Can I request emergency same-day repairs?",
     answer:
-      'Yes! Emergency bookings for sudden electrical blackouts, burst pipes, and bathroom blockages are prioritized for dispatch within 30 to 45 minutes across Kathmandu and Lalitpur.',
+      "Yes! Emergency bookings for sudden electrical blackouts, burst pipes, and bathroom blockages are prioritized for dispatch within 30 to 45 minutes across Kathmandu and Lalitpur.",
   },
 ];
 
@@ -47,9 +47,10 @@ export default function FAQ() {
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
             <div className="section-eyebrow">COMMON QUESTIONS</div>
-            <h2 className="section-heading">Frequently asked questions.</h2>
+            <h2 className="section-heading">Frequently Asked Questions.</h2>
             <p className="section-sub mx-auto">
-              Everything you need to know about booking, pricing, and our verified pros.
+              Everything you need to know about booking, pricing, and our
+              verified pros.
             </p>
           </div>
 
@@ -73,7 +74,7 @@ export default function FAQ() {
                     <ChevronDown
                       size={18}
                       className={`text-neutral-500 shrink-0 transition-transform duration-200 ${
-                        isOpen ? 'rotate-180 text-[#FF6B35]' : ''
+                        isOpen ? "rotate-180 text-[#FF6B35]" : ""
                       }`}
                     />
                   </button>

@@ -54,9 +54,9 @@ export default function HowItWorks() {
           <h2 className="section-heading capitalize">
             Home services in three simple steps.
           </h2>
-          <p className="section-sub capitalize !sm:text-lg ">
-            From booking to payment, we eliminate uncertainty with upfront
-            pricing and verified professionals.
+          <p className="section-sub  !sm:text-lg ">
+            From booking To Payment, We Eliminate Uncertainty with Upfront
+            Pricing and Verified Professionals.
           </p>
         </div>
 

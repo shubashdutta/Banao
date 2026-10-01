@@ -491,7 +491,7 @@ export default function App() {
               <h2 className="section-heading capitalize">
                 Everything you need.
                 <br />
-                In a few taps.
+                in a few taps.
               </h2>
               <p className="section-sub">
                 Find professionals, choose a time, track your booking and get
@@ -553,7 +553,9 @@ export default function App() {
           <div className="pros-grid">
             <div>
               <div className="section-eyebrow">FOR PROFESSIONALS</div>
-              <h2 className="section-heading">People you can count on.</h2>
+              <h2 className="section-heading capitalize">
+                People you can count on.
+              </h2>
               <p className="section-sub">
                 Join the Banao Pro community and get steady work, fair pay and a
                 growing customer base.
