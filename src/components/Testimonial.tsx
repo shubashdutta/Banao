@@ -89,7 +89,7 @@ const TestimonialPage = () => {
 
   return (
     <section className="w-full py-20 px-6 sm:px-10 lg:px-20 bg-neutral-50 overflow-hidden">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto pb-5">
         {/* Section Header with Navigation Arrows */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
           <div className="space-y-3 max-w-xl">
@@ -136,7 +136,7 @@ const TestimonialPage = () => {
             {testimonials.map((item) => (
               <div
                 key={item.id}
-                className="w-full md:w-[calc(50%-16px)] lg:w-[calc(33.333%-21.33px)] shrink-0"
+                className="w-full md:w-[calc(50%-16px)] lg:w-[calc(33.333%-21.33px)] shrink-0 pb-3"
               >
                 <div className="h-full relative bg-white rounded-3xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 border border-neutral-100 flex flex-col justify-between overflow-hidden group">
                   {/* Decorative Background Accent */}
