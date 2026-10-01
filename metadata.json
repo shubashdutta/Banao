@@ -1,0 +1,6 @@
+{
+  "name": "Banao - Home Services in Nepal",
+  "description": "On-demand home services across Nepal. Book verified plumbers, electricians, cleaners, carpenters, and beauty professionals with clear upfront pricing.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
