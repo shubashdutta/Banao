@@ -1,0 +1,381 @@
+name: Build & Deploy Service
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      deploy_sha:
+        description: "Full commit SHA on the deployment branch; empty uses the workflow commit"
+        required: false
+        default: ""
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-deployment
+  cancel-in-progress: false
+
+env:
+  PROJECT_NAME: Banao-FE
+  SERVICE_NAME: banao-fe-service
+  APP_DIR: /root/banao/Banao-FE
+  IMAGE_NAME: banao-fe
+  COMPOSE_FILE_NAME: docker-compose.yml
+  DEPLOY_BRANCH: main
+  HEALTH_URL: http://127.0.0.1:7008/healthz
+  SMOKE_URL: ""
+  HEALTH_STATUS: "200"
+  HEALTH_RETRIES: "15"
+  HEALTH_INTERVAL: "3"
+  WAIT_TIMEOUT: "120"
+  REQUIRE_CONTAINER_HEALTH: "true"
+  STATE_DIR: /root/banao
+  STATE_FILE: ""
+  LOCK_FILE: ""
+  PRE_DEPLOY_CMD: ""
+  POST_DEPLOY_CMD: ""
+  AUTO_ROLLBACK: "true"
+  CLEANUP_OLD_IMAGES: "true"
+  NOTIFY_ON_SUCCESS: "true"
+  MAIL_FROM_NAME: Dome Infosys Pvt. Ltd.
+  DEPLOY_SHA: ${{ inputs.deploy_sha != '' && inputs.deploy_sha || github.sha }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Validate deployment configuration
+        env:
+          SSH_IP: ${{ secrets.SSH_IP }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          set -euo pipefail
+          for key in PROJECT_NAME SERVICE_NAME APP_DIR IMAGE_NAME COMPOSE_FILE_NAME DEPLOY_BRANCH HEALTH_URL; do
+            [ -n "${!key}" ] || { echo "::error::Set $key in workflow env"; exit 1; }
+          done
+          [[ "$SERVICE_NAME" =~ ^[a-zA-Z0-9][a-zA-Z0-9_.-]*$ ]]
+          [[ "$APP_DIR" = /* ]]
+          for key in HEALTH_RETRIES HEALTH_INTERVAL WAIT_TIMEOUT; do
+            [[ "${!key}" =~ ^[1-9][0-9]*$ ]] || { echo "::error::$key must be a positive integer"; exit 1; }
+          done
+          [[ "$HEALTH_STATUS" =~ ^[23][0-9]{2}$ ]]
+          for key in REQUIRE_CONTAINER_HEALTH AUTO_ROLLBACK CLEANUP_OLD_IMAGES NOTIFY_ON_SUCCESS; do
+            [[ "${!key}" = true || "${!key}" = false ]] || { echo "::error::$key must be true or false"; exit 1; }
+          done
+          if [ "$GITHUB_REF_NAME" != "$DEPLOY_BRANCH" ]; then
+            echo '::error::Run this workflow from DEPLOY_BRANCH; align the push filter with that branch.'
+            exit 1
+          fi
+          test -n "$SSH_IP" && test -n "$SSH_USER"
+          [[ "$DEPLOY_SHA" =~ ^[0-9a-fA-F]{40}$ ]] || { echo 'Use a full 40-character commit SHA'; exit 1; }
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@dc588b651fe13675774614f8e6a936a468676387
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server to known_hosts
+        env:
+          KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+          HOST: ${{ secrets.SSH_IP }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          if [ -n "${KNOWN_HOSTS:-}" ]; then
+            printf '%s\n' "$KNOWN_HOSTS" | tr -d '\r' > ~/.ssh/known_hosts
+          else
+            echo "::warning::SSH_KNOWN_HOSTS is empty; trusting an unverified network host-key scan."
+            ssh-keyscan -T 10 -H -t ed25519,rsa,ecdsa "$HOST" > ~/.ssh/known_hosts
+          fi
+          chmod 600 ~/.ssh/known_hosts
+          if ! ssh-keygen -F "$HOST" -f ~/.ssh/known_hosts >/dev/null; then
+            echo "::error::No known_hosts entry matches SSH_IP. Expected: SERVER_ADDRESS key-type PUBLIC_HOST_KEY"
+            exit 1
+          fi
+
+      - name: Build, deploy, and verify service
+        id: ssh_deploy
+        env:
+          SSH_IP: ${{ secrets.SSH_IP }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          set -euo pipefail
+          cat > "$RUNNER_TEMP/deploy-service.sh" <<'REMOTE'
+          set -euo pipefail
+          umask 077
+          {
+          for bin in docker git python3 curl flock; do
+            command -v "$bin" >/dev/null || { echo "Missing command: $bin"; exit 1; }
+          done
+          docker compose version
+          cd "$APP_DIR"
+          export COMPOSE_FILE="$COMPOSE_FILE_NAME"
+          export SERVICE="$SERVICE_NAME"
+          STATE_DIR="${STATE_DIR:-$HOME/.compose-deploy/$SERVICE}"
+          STATE_FILE="${STATE_FILE:-$STATE_DIR/.last_successful_sha-$SERVICE}"
+          LOCK_FILE="${LOCK_FILE:-$STATE_DIR/.deploy-$SERVICE.lock}"
+          mkdir -p "$STATE_DIR" "$(dirname "$STATE_FILE")" "$(dirname "$LOCK_FILE")"
+          exec 9>"$LOCK_FILE"
+          flock -n 9 || { echo 'Another deployment holds the host lock'; exit 1; }
+          phase=preflight
+          rollback_status=not-needed
+          on_exit() {
+            rc=$?
+            if [ "$rc" -ne 0 ]; then
+              echo "DEPLOYMENT FAILED during: $phase; rollback=$rollback_status"
+              docker compose ps -a || true
+              docker compose logs --no-color --tail=120 "$SERVICE" || true
+            fi
+          }
+          trap on_exit EXIT
+          
+          test -z "$(git status --porcelain --untracked-files=no)" || {
+            echo 'Tracked files have local changes; reconcile them before deploying.'; exit 1;
+          }
+          if git ls-files --error-unmatch .env >/dev/null 2>&1; then
+            echo '.env must be untracked and provisioned on the server.'; exit 1
+          fi
+          test -f .env || { echo 'Provision the application .env first.'; exit 1; }
+          chmod 600 .env
+          PREV_GOOD_SHA=""
+          if [ -f "$STATE_FILE" ]; then
+            PREV_GOOD_SHA=$(cat "$STATE_FILE")
+            [[ "$PREV_GOOD_SHA" =~ ^[0-9a-f]{40}$ ]] || { echo 'Invalid deployment state'; exit 1; }
+          fi
+          
+          git fetch origin "$DEPLOY_BRANCH"
+          BRANCH_TIP=$(git rev-parse FETCH_HEAD)
+          git cat-file -e "$DEPLOY_SHA^{commit}" 2>/dev/null || git fetch origin "$DEPLOY_SHA"
+          git merge-base --is-ancestor "$DEPLOY_SHA" "$BRANCH_TIP" || {
+            echo 'Requested SHA is not in the fetched deployment branch history.'; exit 1;
+          }
+          DEPLOY_SHA=$(git rev-parse "$DEPLOY_SHA^{commit}")
+          APP_PREFIX=$(git rev-parse --show-prefix)
+          if git cat-file -e "$DEPLOY_SHA:${APP_PREFIX}.env" 2>/dev/null; then
+            echo 'Requested commit tracks .env; refusing checkout.'; exit 1
+          fi
+          git reset --hard "$DEPLOY_SHA"
+          export IMAGE_TAG="$DEPLOY_SHA"
+          
+          validate_config() {
+            docker compose config --quiet || return 1
+            docker compose config --format json | python3 -c '
+          import json,os,sys
+          c=json.load(sys.stdin)
+          s=c["services"][os.environ["SERVICE"]]
+          assert s["image"] == os.environ["IMAGE_NAME"]+":"+os.environ["IMAGE_TAG"], "Incorrect service image tag"
+          if os.environ["REQUIRE_CONTAINER_HEALTH"] == "true":
+              assert s.get("healthcheck") and not s["healthcheck"].get("disable"), "Explicit Compose healthcheck required"
+          ' || return 1
+          }
+          validate_config
+          network_list=$(docker compose config --format json | python3 -c '
+          import json,sys
+          c=json.load(sys.stdin)
+          for key,value in c.get("networks",{}).items():
+              if value.get("external"):
+                  print(value.get("name") or key)
+          ')
+          while IFS= read -r network; do
+            [ -n "$network" ] || continue
+            if docker network inspect "$network" >/dev/null 2>&1; then
+              echo "Network $network already exists, skipping"
+            else
+              echo "Creating external network $network"
+              docker network create "$network" >/dev/null \
+                || docker network inspect "$network" >/dev/null
+            fi
+          done <<< "$network_list"
+          
+          persist_tag() {
+            python3 - <<'ENV_PY'
+          import os,re
+          from pathlib import Path
+          p=Path('.env')
+          lines=[x for x in p.read_text().splitlines() if not re.match(r'^\s*(?:export\s+)?IMAGE_TAG\s*=',x)]
+          lines.append('IMAGE_TAG='+os.environ['IMAGE_TAG'])
+          tmp=p.with_name('.env.deploy-tmp')
+          tmp.write_text('\n'.join(lines)+'\n')
+          tmp.chmod(0o600)
+          tmp.replace(p)
+          ENV_PY
+          }
+          compose_up() {
+            docker compose up -d --no-deps --no-build --pull never --force-recreate \
+              --wait --wait-timeout "$WAIT_TIMEOUT" "$SERVICE"
+          }
+          verify() {
+            local id code attempt
+            id=$(docker compose ps -q "$SERVICE") || return 1
+            [ -n "$id" ] || return 1
+            [ "$(docker inspect -f '{{.State.Running}}' "$id")" = true ] || return 1
+            [ "$(docker inspect -f '{{.Config.Image}}' "$id")" = "$IMAGE_NAME:$IMAGE_TAG" ] || return 1
+            if [ "$REQUIRE_CONTAINER_HEALTH" = true ]; then
+              [ "$(docker inspect -f '{{.State.Health.Status}}' "$id")" = healthy ] || return 1
+            fi
+            for attempt in $(seq 1 "$HEALTH_RETRIES"); do
+              code=$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
+                --connect-timeout 3 --max-time 5 "$HEALTH_URL") || code=000
+              if [ "$code" = "$HEALTH_STATUS" ]; then
+                [ -n "$SMOKE_URL" ] || return 0
+                code=$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
+                  --connect-timeout 3 --max-time 5 "$SMOKE_URL") || code=000
+                [ "$code" = "$HEALTH_STATUS" ] && return 0
+              fi
+              sleep "$HEALTH_INTERVAL"
+            done
+            return 1
+          }
+          
+          phase=build
+          docker compose build --pull "$SERVICE"
+          
+          phase=pre-deploy-hook
+          if [ -n "$PRE_DEPLOY_CMD" ]; then
+            bash -euo pipefail -c "$PRE_DEPLOY_CMD"
+          fi
+          phase=start-and-verify
+          if compose_up && verify; then
+            phase=record-success
+            persist_tag
+            printf '%s\n' "$DEPLOY_SHA" > "$STATE_FILE.tmp"
+            mv "$STATE_FILE.tmp" "$STATE_FILE"
+          else
+            docker compose ps -a || true
+            docker compose logs --no-color --tail=200 "$SERVICE" || true
+            phase=rollback
+            rollback_status=unavailable
+            if [ "$AUTO_ROLLBACK" != true ]; then
+              echo 'ROLLBACK_DISABLED: manual recovery required.'; exit 1
+            fi
+            if [ -z "$PREV_GOOD_SHA" ] || [ "$PREV_GOOD_SHA" = "$DEPLOY_SHA" ]; then
+              echo 'ROLLBACK_UNAVAILABLE: no distinct previous successful release.'
+              exit 1
+            fi
+            docker image inspect "$IMAGE_NAME:$PREV_GOOD_SHA" >/dev/null || {
+              echo 'ROLLBACK_UNAVAILABLE: previous image missing'; exit 1;
+            }
+            rollback_status=failed
+            git cat-file -e "$PREV_GOOD_SHA^{commit}" || { echo 'ROLLBACK_FAILED: previous source missing'; exit 1; }
+            if git cat-file -e "$PREV_GOOD_SHA:${APP_PREFIX}.env" 2>/dev/null; then
+              echo 'ROLLBACK_FAILED: previous commit tracks .env'; exit 1
+            fi
+            git reset --hard "$PREV_GOOD_SHA"
+            export IMAGE_TAG="$PREV_GOOD_SHA"
+            if validate_config && compose_up && verify; then
+              persist_tag
+              rollback_status=performed
+              echo "ROLLBACK_PERFORMED sha=$PREV_GOOD_SHA"
+            else
+              echo "ROLLBACK_FAILED sha=$PREV_GOOD_SHA"
+            fi
+            exit 1
+          fi
+          
+          phase=post-deploy-hook
+          if [ -n "$POST_DEPLOY_CMD" ]; then
+            bash -euo pipefail -c "$POST_DEPLOY_CMD" || echo 'WARNING: POST_DEPLOY_CMD failed.'
+          fi
+          phase=cleanup-images
+          if [ "$CLEANUP_OLD_IMAGES" != true ]; then
+            echo 'Image cleanup disabled.'
+          elif [ "$PREV_GOOD_SHA" = "$DEPLOY_SHA" ]; then
+            echo 'Same-SHA redeployment: preserve existing rollback images.'
+          elif images=$(docker image ls "$IMAGE_NAME" --format '{{.Repository}}:{{.Tag}}'); then
+            while IFS= read -r image; do
+              [ -n "$image" ] || continue
+              [ "${image%:*}" = "$IMAGE_NAME" ] || continue
+              tag="${image##*:}"
+              [[ "$tag" =~ ^[0-9a-fA-F]{40}$ ]] || continue
+              [ "$tag" != "$DEPLOY_SHA" ] || continue
+              [ "$tag" != "$PREV_GOOD_SHA" ] || continue
+              docker image rm "$image" || echo "WARNING: Could not remove $image"
+            done <<< "$images"
+          else
+            echo 'WARNING: Image cleanup skipped; image listing failed.'
+          fi
+          echo "DEPLOYMENT_COMPLETE=$DEPLOY_SHA"
+          } </dev/null
+          REMOTE
+          CMD=""
+          for key in PROJECT_NAME SERVICE_NAME APP_DIR IMAGE_NAME COMPOSE_FILE_NAME DEPLOY_BRANCH \
+            HEALTH_URL SMOKE_URL HEALTH_STATUS HEALTH_RETRIES HEALTH_INTERVAL WAIT_TIMEOUT \
+            REQUIRE_CONTAINER_HEALTH STATE_DIR STATE_FILE LOCK_FILE PRE_DEPLOY_CMD POST_DEPLOY_CMD \
+            AUTO_ROLLBACK CLEANUP_OLD_IMAGES DEPLOY_SHA; do
+            printf -v assignment '%s=%q ' "$key" "${!key}"
+            CMD+="$assignment"
+          done
+          CMD+='bash -s'
+          DEPLOY_LOG="$RUNNER_TEMP/service-deploy.log"
+          set +e
+          ssh -T -o BatchMode=yes -o StrictHostKeyChecking=yes \
+            -o ConnectTimeout=15 -o ServerAliveInterval=30 -o ServerAliveCountMax=10 \
+            "$SSH_USER@$SSH_IP" "$CMD" < "$RUNNER_TEMP/deploy-service.sh" 2>&1 | tee "$DEPLOY_LOG"
+          statuses=("${PIPESTATUS[@]}")
+          set -e
+          rollback=not-needed
+          if grep -q '^ROLLBACK_PERFORMED ' "$DEPLOY_LOG"; then
+            rollback=$(grep '^ROLLBACK_PERFORMED ' "$DEPLOY_LOG" | tail -1)
+          elif grep -q '^ROLLBACK_DISABLED' "$DEPLOY_LOG"; then
+            rollback=disabled
+          elif grep -q '^ROLLBACK_FAILED' "$DEPLOY_LOG"; then
+            rollback=failed
+          elif grep -q '^ROLLBACK_UNAVAILABLE' "$DEPLOY_LOG"; then
+            rollback=unavailable
+          elif [ "${statuses[0]}" -ne 0 ]; then
+            rollback='not-confirmed; inspect deployment logs'
+          fi
+          printf 'rollback=%s\n' "$rollback" >> "$GITHUB_OUTPUT"
+          [ "${statuses[0]}" -eq 0 ] && [ "${statuses[1]}" -eq 0 ] || exit 1
+          if ! grep -Fxq "DEPLOYMENT_COMPLETE=${DEPLOY_SHA,,}" "$DEPLOY_LOG"; then
+            echo '::error::Remote script ended without verified deployment completion.'
+            exit 1
+          fi
+
+      - name: Notify on failure
+        if: ${{ failure() && vars.MAIL_TO != '' }}
+        uses: dawidd6/action-send-mail@2cea9617b09d79a095af21254fbcb7ae95903dde
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.GMAIL_USERNAME }}
+          password: ${{ secrets.GMAIL_PASSWORD }}
+          subject: "❌ Deploy Failed: ${{ env.PROJECT_NAME }} (${{ env.DEPLOY_SHA }})"
+          to: ${{ vars.MAIL_TO }}
+          from: ${{ env.MAIL_FROM_NAME }} <${{ secrets.GMAIL_USERNAME }}>
+          body: |
+            Deployment failed for ${{ env.PROJECT_NAME }}.
+            Branch: ${{ env.DEPLOY_BRANCH }}
+            Commit: ${{ env.DEPLOY_SHA }}
+            Triggered by: ${{ github.actor }}
+            Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            Check the failed step and deployment phase in the workflow logs.
+            Rollback status: ${{ steps.ssh_deploy.outputs.rollback || 'not available; inspect logs' }}
+            Automatic rollback enabled: ${{ env.AUTO_ROLLBACK }}
+            Rollback requires a distinct recorded successful SHA and its retained image.
+            Manual intervention is required if rollback is unavailable or fails.
+
+      - name: Notify on success
+        if: ${{ success() && vars.MAIL_TO != '' && env.NOTIFY_ON_SUCCESS == 'true' }}
+        uses: dawidd6/action-send-mail@2cea9617b09d79a095af21254fbcb7ae95903dde
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.GMAIL_USERNAME }}
+          password: ${{ secrets.GMAIL_PASSWORD }}
+          subject: "✅ Deploy Succeeded: ${{ env.PROJECT_NAME }} (${{ env.DEPLOY_SHA }})"
+          to: ${{ vars.MAIL_TO }}
+          from: ${{ env.MAIL_FROM_NAME }} <${{ secrets.GMAIL_USERNAME }}>
+          body: |
+            Deployment checks passed for ${{ env.PROJECT_NAME }}.
+            Branch: ${{ env.DEPLOY_BRANCH }}
+            Commit: ${{ env.DEPLOY_SHA }}
+            Triggered by: ${{ github.actor }}
+            Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            Service startup, image identity, and configured health checks completed.
+            Public DNS/TLS and browser/API integration checks remain separate tests.
