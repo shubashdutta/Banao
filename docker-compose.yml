@@ -1,0 +1,48 @@
+name: banao-fe
+
+services:
+  banao-fe-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # args:
+      #   VITE_API_URL: ${VITE_API_URL:-}
+      #   VITE_CHATBOT_SCRIPT_URL: ${VITE_CHATBOT_SCRIPT_URL:-}
+    image: banao-fe:${IMAGE_TAG:?set IMAGE_TAG in .env — 'latest' for local dev; the deploy workflow injects the commit SHA on servers}
+    container_name: banao-fronend
+    restart: unless-stopped
+    init: true
+    stop_grace_period: 30s
+    ports:
+      - "127.0.0.1:7008:8080"
+    env_file:
+      - .env
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 512M
+        reservations:
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-T", "3", "-O", "/dev/null", "http://127.0.0.1:8080/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    networks:
+      - banao-network
+
+networks:
+  banao-network:
+    external: true
+    name: banao-network
