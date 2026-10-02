@@ -784,3 +784,9 @@
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+/* Overrides Ant Design's default active menu item styles */
+.ant-menu-light .ant-menu-item-selected {
+  background-color: #ff6b00 !important;
+  color: white;
+}
