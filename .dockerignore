@@ -1,0 +1,52 @@
+# Dependencies and generated output
+node_modules
+**/node_modules
+dist
+build
+coverage
+.vite
+.next
+.cache
+.turbo
+*.tsbuildinfo
+
+# Version control and editor metadata
+.git
+.github
+.gitignore
+.vscode
+.idea
+.DS_Store
+
+# Never copy server credentials or local environment files into the image.
+.env
+.env.*
+**/.env
+**/.env.*
+.npmrc
+**/.npmrc
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Logs and test output
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+playwright-report
+test-results
+
+# Deployment-only files and documentation
+Dockerfile*
+*compose*.yml
+*compose*.yaml
+.dockerignore
+README*
+
+# This Docker build uses npm and package-lock.json, not Bun or Yarn.
+bun.lock
+bun.lockb
+yarn.lock
+pnpm-lock.yaml
