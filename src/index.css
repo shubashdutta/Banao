@@ -790,3 +790,22 @@
   background-color: #ff6b00 !important;
   color: white;
 }
+
+/* Admin sidebar independent scroll - sidebar is 100vh, scrollbar shows here when menu overflows */
+.admin-sider-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #d4d4d4 transparent;
+}
+.admin-sider-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.admin-sider-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.admin-sider-scroll::-webkit-scrollbar-thumb {
+  background: #d4d4d4;
+  border-radius: 999px;
+}
+.admin-sider-scroll::-webkit-scrollbar-thumb:hover {
+  background: #a3a3a3;
+}

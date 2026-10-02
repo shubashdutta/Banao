@@ -50,7 +50,7 @@ const AdminLayout = ({ children }: { children?: React.ReactNode }) => {
   });
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
+    <Layout style={{ minHeight: "100vh" }} hasSider>
       <Sider
         trigger={null}
         collapsible
@@ -58,14 +58,24 @@ const AdminLayout = ({ children }: { children?: React.ReactNode }) => {
         theme="light"
         width={260}
         style={{
+          height: "100vh",
+          position: "sticky",
+          top: 0,
           borderRight: "1px solid #f0f0f0",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
+          overflow: "hidden",
+          flexShrink: 0,
         }}
       >
-        <div>
-          <div className="flex items-center justify-between px-6 py-5">
+        {/* Full-height flex column: logo (fixed) + menu (scroll) + footer (fixed) */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100vh",
+            overflow: "hidden",
+          }}
+        >
+          <div className="flex items-center justify-between px-6 py-5 shrink-0">
             {!collapsed && (
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-[#FF6B35] rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-md shadow-orange-500/30">
@@ -88,42 +98,56 @@ const AdminLayout = ({ children }: { children?: React.ReactNode }) => {
             </button>
           </div>
 
-          <Menu
-            theme="light"
-            mode="inline"
-            selectedKeys={[location?.pathname]}
-            onClick={({ key }) => navigate(key)}
-            style={{ borderRight: 0, fontWeight: 500 }}
-            items={menuItems}
-          />
-        </div>
-
-        {!collapsed && (
-          <div className="p-3 m-3 bg-neutral-50 border border-neutral-200/60 rounded-2xl">
-            <div className="flex justify-between items-center text-[10px] font-bold text-neutral-400 uppercase tracking-wider mb-1">
-              <span>Nepal Operations</span>
-              <span>v2.4.0</span>
-            </div>
-            <div className="text-xs font-semibold text-neutral-700 truncate">
-              Kathmandu / Pokhara / Lalitpur
-            </div>
+          {/* Scrollable menu area - scrollbar appears here when items overflow */}
+          <div
+            className="no-scrollbar"
+            style={{
+              flex: 1,
+              overflowY: "auto",
+              overflowX: "hidden",
+              paddingBottom: 8,
+            }}
+          >
+            <Menu
+              theme="light"
+              mode="inline"
+              selectedKeys={[location?.pathname]}
+              onClick={({ key }) => navigate(key)}
+              style={{ borderRight: 0, fontWeight: 500 }}
+              items={menuItems}
+            />
           </div>
-        )}
+
+          {!collapsed && (
+            <div className="shrink-0 p-3">
+              <div className="p-3 bg-neutral-50 border border-neutral-200/60 rounded-2xl">
+                <div className="flex justify-between items-center text-[10px] font-bold text-neutral-400 uppercase tracking-wider mb-1">
+                  <span>Nepal Operations</span>
+                  <span>v2.4.0</span>
+                </div>
+                <div className="text-xs font-semibold text-neutral-700 truncate">
+                  Kathmandu / Pokhara / Lalitpur
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </Sider>
 
       <Layout>
-        <Header colorBgContainer={colorBgContainer} />
+        <div style={{ position: "sticky", top: 0, zIndex: 10 }}>
+          <Header colorBgContainer={colorBgContainer} />
+        </div>
 
         <Content
           style={{
-            margin: "10px 6px",
+            margin: "10px 6px 6px",
             padding: 24,
-            minHeight: 280,
             background: colorBgContainer,
             borderRadius: borderRadiusLG,
           }}
         >
-          <Outlet />
+          {children || <Outlet />}
         </Content>
       </Layout>
     </Layout>
