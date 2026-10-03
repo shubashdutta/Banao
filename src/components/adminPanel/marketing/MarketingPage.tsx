@@ -53,7 +53,7 @@ type GrowthSeries = { months: string[]; total: number[]; active: number[] };
 type TrendSeries = { months: string[]; values: number[] };
 type DeviceSlice = { label: string; value: number; color: string };
 type CampaignBar = { name: string; open: number; click: number };
-
+// test
 const navTabs: NavTab[] = [
   {
     id: "Newsletter Dashboard",
