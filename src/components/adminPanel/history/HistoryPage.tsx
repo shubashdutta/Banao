@@ -307,7 +307,7 @@ const HistoryPage = () => {
       <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5 flex-wrap">
-            <h1 className="text-2xl font-extrabold tracking-tight text-neutral-900">
+            <h1 className="text-2xl font-semibold  tracking-tight text-neutral-900">
               System Security &amp; Audit Logs
             </h1>
             <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-neutral-900 text-white tracking-wide">

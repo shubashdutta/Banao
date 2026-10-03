@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   CalendarDays,
   ChartColumn,
@@ -259,12 +259,134 @@ const buildAreaPath = (
 ): string =>
   `${buildLinePath(values, width, height, maxValue)} L${width},${height} L0,${height} Z`;
 
+/**
+ * Adds `reveal-active` to its wrapper the first time it scrolls into view,
+ * which is what triggers the chart CSS animations.
+ */
+const Reveal = ({
+  children,
+  className = "",
+  threshold = 0.15,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  threshold?: number;
+}) => {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [active, setActive] = useState(false);
 
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
 
-const MetricCard = ({ metric }: { metric: Metric }) => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setActive(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          setActive(true);
+          observer.disconnect();
+        });
+      },
+      { threshold, rootMargin: "0px 0px -40px 0px" },
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  return (
+    <div ref={ref} className={`${active ? "reveal-active" : ""} ${className}`}>
+      {children}
+    </div>
+  );
+};
+
+/** Counts from 0 up to `value` once scrolled into view. */
+const CountUp = ({
+  value,
+  duration = 1400,
+  decimals = 0,
+}: {
+  value: number;
+  duration?: number;
+  decimals?: number;
+}) => {
+  const ref = useRef<HTMLSpanElement | null>(null);
+  const [display, setDisplay] = useState(0);
+  const played = useRef(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (reduced) {
+      setDisplay(value);
+      return;
+    }
+
+    const run = () => {
+      const start = performance.now();
+      const tick = (now: number) => {
+        const progress = Math.min((now - start) / duration, 1);
+        // easeOutExpo for a fast start that settles smoothly
+        const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+        setDisplay(value * eased);
+        if (progress < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting || played.current) return;
+          played.current = true;
+          run();
+        });
+      },
+      { threshold: 0.4 },
+    );
+
+    observer.observe(node);
+
+    // If the node is already on screen the observer callback can be missed
+    // in some browsers, so guarantee the animation still runs.
+    const fallback = window.setTimeout(() => {
+      if (played.current) return;
+      played.current = true;
+      run();
+    }, 120);
+
+    return () => {
+      window.clearTimeout(fallback);
+      observer.disconnect();
+    };
+  }, [value, duration]);
+
+  return <span ref={ref}>{display.toFixed(decimals)}</span>;
+};
+
+const MetricCard = ({
+  metric,
+  index = 0,
+}: {
+  metric: Metric;
+  index?: number;
+}) => {
   const Icon = metric.icon;
   return (
-    <div className="rounded-2xl border border-neutral-200/70 bg-white p-4 shadow-sm transition hover:shadow-md">
+    <div
+      className="animate-rise-in rounded-2xl border border-neutral-200/70 bg-white p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md"
+      style={{ animationDelay: `${index * 60}ms` }}
+    >
       <div className="flex items-start justify-between gap-2">
         <p className="text-[10.5px] font-bold uppercase tracking-wider text-neutral-400">
           {metric.label}
@@ -275,7 +397,7 @@ const MetricCard = ({ metric }: { metric: Metric }) => {
           <Icon className="h-4 w-4" />
         </span>
       </div>
-      <div className="mt-2 text-xl font-extrabold tracking-tight text-neutral-900">
+      <div className="mt-2 text-xl font-semibold  tracking-tight text-neutral-900">
         {metric.value}
       </div>
       <div className="mt-0.5 text-[11px] font-semibold text-neutral-500">
@@ -290,13 +412,18 @@ const ChartCard = ({
   subtitle,
   headerRight,
   children,
+  index = 0,
 }: {
   title: string;
   subtitle: string;
   headerRight?: React.ReactNode;
   children: React.ReactNode;
+  index?: number;
 }) => (
-  <section className="rounded-2xl border border-neutral-200/70 bg-white p-5 shadow-sm">
+  <section
+    className="animate-rise-in rounded-2xl border border-neutral-200/70 bg-white p-5 shadow-sm transition duration-300 hover:shadow-md"
+    style={{ animationDelay: `${index * 90}ms` }}
+  >
     <div className="flex flex-wrap items-start justify-between gap-3">
       <div>
         <h3 className="text-sm font-bold text-neutral-900">{title}</h3>
@@ -322,7 +449,7 @@ const BulkNewsletterStudioPage = () => {
       {/* Page header */}
       <div>
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-2xl font-extrabold tracking-tight text-neutral-900 lg:text-[27px]">
+          <h1 className="text-2xl font-semibold  tracking-tight text-neutral-900 lg:text-[27px]">
             Bulk Newsletter &amp; Email Campaign Studio
           </h1>
           <span className="inline-flex shrink-0 items-center rounded-full bg-orange-700 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-white">
@@ -359,7 +486,9 @@ const BulkNewsletterStudioPage = () => {
       </div>
 
       {activeTab === "Newsletter Dashboard" ? (
-        <>
+        // key forces a full remount on every tab switch so the chart
+        // animations replay instead of reusing already-animated DOM nodes.
+        <div key={activeTab} className="flex flex-col gap-5">
           {/* Action banner */}
           <section className="rounded-2xl border border-neutral-200/70 bg-white p-5 shadow-sm">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
@@ -395,37 +524,46 @@ const BulkNewsletterStudioPage = () => {
                   type="button"
                   className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#FF6B35] px-4 text-sm font-bold text-white shadow-sm shadow-orange-500/25 transition hover:bg-[#f45d26] active:scale-[0.98]"
                 >
-                  <Zap className="h-4 w-4" />
-                  + New Campaign
+                  <Zap className="h-4 w-4" />+ New Campaign
                 </button>
               </div>
             </div>
           </section>
 
           {/* Primary metrics */}
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
-            {primaryMetrics.map((metric) => (
-              <MetricCard key={metric.label} metric={metric} />
+          <Reveal
+            className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6"
+            threshold={0.05}
+          >
+            {primaryMetrics.map((metric, index) => (
+              <MetricCard key={metric.label} metric={metric} index={index} />
             ))}
-          </div>
+          </Reveal>
 
           {/* Performance metrics */}
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
-            {performanceMetrics.map((metric) => (
-              <MetricCard key={metric.label} metric={metric} />
+          <Reveal
+            className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6"
+            threshold={0.05}
+          >
+            {performanceMetrics.map((metric, index) => (
+              <MetricCard
+                key={metric.label}
+                metric={metric}
+                index={index + primaryMetrics.length}
+              />
             ))}
-          </div>
+          </Reveal>
 
           {/* Main analytics */}
-          <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1.6fr_1fr]">
+          <Reveal className="grid grid-cols-1 gap-4 xl:grid-cols-[1.6fr_1fr]">
             {/* Daily Email Activity Breakdown */}
             <ChartCard
               title="Daily Email Activity Breakdown"
               subtitle="Sent, Delivered, Opened, and Clicked volumes"
+              index={0}
               headerRight={
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-orange-100 bg-orange-50 px-3 py-1 text-[11px] font-bold text-[#FF6B35]">
-                  <TrendingUp className="h-3.5 w-3.5" />
-                  7 Days Trend
+                  <TrendingUp className="h-3.5 w-3.5" />7 Days Trend
                 </span>
               }
             >
@@ -439,11 +577,23 @@ const BulkNewsletterStudioPage = () => {
                     <stop offset="0%" stopColor="#FF6B35" stopOpacity="0.3" />
                     <stop offset="100%" stopColor="#FF6B35" stopOpacity="0" />
                   </linearGradient>
-                  <linearGradient id="openedGradient" x1="0" y1="0" x2="0" y2="1">
+                  <linearGradient
+                    id="openedGradient"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
                     <stop offset="0%" stopColor="#10b981" stopOpacity="0.25" />
                     <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
                   </linearGradient>
-                  <linearGradient id="clickedGradient" x1="0" y1="0" x2="0" y2="1">
+                  <linearGradient
+                    id="clickedGradient"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
                     <stop offset="0%" stopColor="#0ea5e9" stopOpacity="0.25" />
                     <stop offset="100%" stopColor="#0ea5e9" stopOpacity="0" />
                   </linearGradient>
@@ -463,11 +613,26 @@ const BulkNewsletterStudioPage = () => {
                 ))}
 
                 <path
-                  d={buildAreaPath(activitySeries.sent, CHART_WIDTH, CHART_HEIGHT, activityMax)}
+                  d={buildAreaPath(
+                    activitySeries.sent,
+                    CHART_WIDTH,
+                    CHART_HEIGHT,
+                    activityMax,
+                  )}
+                  className="chart-area"
+                  style={{ animationDelay: "450ms" }}
                   fill="url(#sentGradient)"
                 />
                 <path
-                  d={buildLinePath(activitySeries.sent, CHART_WIDTH, CHART_HEIGHT, activityMax)}
+                  d={buildLinePath(
+                    activitySeries.sent,
+                    CHART_WIDTH,
+                    CHART_HEIGHT,
+                    activityMax,
+                  )}
+                  className="chart-line"
+                  style={{ animationDelay: "0ms" }}
+                  pathLength={1}
                   fill="none"
                   stroke="#FF6B35"
                   strokeWidth={2}
@@ -475,11 +640,26 @@ const BulkNewsletterStudioPage = () => {
                   vectorEffect="non-scaling-stroke"
                 />
                 <path
-                  d={buildAreaPath(activitySeries.opened, CHART_WIDTH, CHART_HEIGHT, activityMax)}
+                  d={buildAreaPath(
+                    activitySeries.opened,
+                    CHART_WIDTH,
+                    CHART_HEIGHT,
+                    activityMax,
+                  )}
+                  className="chart-area"
+                  style={{ animationDelay: "650ms" }}
                   fill="url(#openedGradient)"
                 />
                 <path
-                  d={buildLinePath(activitySeries.opened, CHART_WIDTH, CHART_HEIGHT, activityMax)}
+                  d={buildLinePath(
+                    activitySeries.opened,
+                    CHART_WIDTH,
+                    CHART_HEIGHT,
+                    activityMax,
+                  )}
+                  className="chart-line"
+                  style={{ animationDelay: "200ms" }}
+                  pathLength={1}
                   fill="none"
                   stroke="#10b981"
                   strokeWidth={2}
@@ -487,11 +667,26 @@ const BulkNewsletterStudioPage = () => {
                   vectorEffect="non-scaling-stroke"
                 />
                 <path
-                  d={buildAreaPath(activitySeries.clicked, CHART_WIDTH, CHART_HEIGHT, activityMax)}
+                  d={buildAreaPath(
+                    activitySeries.clicked,
+                    CHART_WIDTH,
+                    CHART_HEIGHT,
+                    activityMax,
+                  )}
+                  className="chart-area"
+                  style={{ animationDelay: "850ms" }}
                   fill="url(#clickedGradient)"
                 />
                 <path
-                  d={buildLinePath(activitySeries.clicked, CHART_WIDTH, CHART_HEIGHT, activityMax)}
+                  d={buildLinePath(
+                    activitySeries.clicked,
+                    CHART_WIDTH,
+                    CHART_HEIGHT,
+                    activityMax,
+                  )}
+                  className="chart-line"
+                  style={{ animationDelay: "400ms" }}
+                  pathLength={1}
                   fill="none"
                   stroke="#0ea5e9"
                   strokeWidth={2}
@@ -530,6 +725,7 @@ const BulkNewsletterStudioPage = () => {
             <ChartCard
               title="Subscriber Growth"
               subtitle="Total vs Active subscribers over time"
+              index={1}
               headerRight={
                 <span className="inline-flex items-center gap-1 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-600">
                   <TrendingUp className="h-3.5 w-3.5" />
@@ -543,7 +739,13 @@ const BulkNewsletterStudioPage = () => {
                 className="h-56 w-full"
               >
                 <defs>
-                  <linearGradient id="growthGradient" x1="0" y1="0" x2="0" y2="1">
+                  <linearGradient
+                    id="growthGradient"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
                     <stop offset="0%" stopColor="#FF6B35" stopOpacity="0.28" />
                     <stop offset="100%" stopColor="#FF6B35" stopOpacity="0" />
                   </linearGradient>
@@ -563,11 +765,26 @@ const BulkNewsletterStudioPage = () => {
                 ))}
 
                 <path
-                  d={buildAreaPath(growthSeries.total, CHART_WIDTH, CHART_HEIGHT, growthMax)}
+                  d={buildAreaPath(
+                    growthSeries.total,
+                    CHART_WIDTH,
+                    CHART_HEIGHT,
+                    growthMax,
+                  )}
+                  className="chart-area"
+                  style={{ animationDelay: "400ms" }}
                   fill="url(#growthGradient)"
                 />
                 <path
-                  d={buildLinePath(growthSeries.total, CHART_WIDTH, CHART_HEIGHT, growthMax)}
+                  d={buildLinePath(
+                    growthSeries.total,
+                    CHART_WIDTH,
+                    CHART_HEIGHT,
+                    growthMax,
+                  )}
+                  className="chart-line"
+                  style={{ animationDelay: "0ms" }}
+                  pathLength={1}
                   fill="none"
                   stroke="#FF6B35"
                   strokeWidth={2.5}
@@ -575,12 +792,19 @@ const BulkNewsletterStudioPage = () => {
                   vectorEffect="non-scaling-stroke"
                 />
                 <path
-                  d={buildLinePath(growthSeries.active, CHART_WIDTH, CHART_HEIGHT, growthMax)}
+                  d={buildLinePath(
+                    growthSeries.active,
+                    CHART_WIDTH,
+                    CHART_HEIGHT,
+                    growthMax,
+                  )}
+                  className="chart-line"
+                  style={{ animationDelay: "250ms" }}
+                  pathLength={1}
                   fill="none"
                   stroke="#10b981"
                   strokeWidth={2.5}
                   strokeLinecap="round"
-                  strokeDasharray="6 4"
                   vectorEffect="non-scaling-stroke"
                 />
               </svg>
@@ -602,14 +826,15 @@ const BulkNewsletterStudioPage = () => {
                 </span>
               </div>
             </ChartCard>
-          </div>
+          </Reveal>
 
           {/* Bottom analytics */}
-          <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+          <Reveal className="grid grid-cols-1 gap-4 xl:grid-cols-2" threshold={0.1}>
             {/* Open Rate Trend */}
             <ChartCard
               title="Open Rate Trend %"
               subtitle="6-Month historical performance"
+              index={2}
             >
               <svg
                 viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}
@@ -617,7 +842,13 @@ const BulkNewsletterStudioPage = () => {
                 className="h-48 w-full"
               >
                 <defs>
-                  <linearGradient id="openRateGradient" x1="0" y1="0" x2="0" y2="1">
+                  <linearGradient
+                    id="openRateGradient"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
                     <stop offset="0%" stopColor="#FF6B35" stopOpacity="0.3" />
                     <stop offset="100%" stopColor="#FF6B35" stopOpacity="0" />
                   </linearGradient>
@@ -637,11 +868,26 @@ const BulkNewsletterStudioPage = () => {
                 ))}
 
                 <path
-                  d={buildAreaPath(openRateSeries.values, CHART_WIDTH, CHART_HEIGHT, openRateMax)}
+                  d={buildAreaPath(
+                    openRateSeries.values,
+                    CHART_WIDTH,
+                    CHART_HEIGHT,
+                    openRateMax,
+                  )}
+                  className="chart-area"
+                  style={{ animationDelay: "400ms" }}
                   fill="url(#openRateGradient)"
                 />
                 <path
-                  d={buildLinePath(openRateSeries.values, CHART_WIDTH, CHART_HEIGHT, openRateMax)}
+                  d={buildLinePath(
+                    openRateSeries.values,
+                    CHART_WIDTH,
+                    CHART_HEIGHT,
+                    openRateMax,
+                  )}
+                  className="chart-line"
+                  style={{ animationDelay: "0ms" }}
+                  pathLength={1}
                   fill="none"
                   stroke="#FF6B35"
                   strokeWidth={2.5}
@@ -650,7 +896,8 @@ const BulkNewsletterStudioPage = () => {
                 />
 
                 {openRateSeries.values.map((value, index) => {
-                  const stepX = CHART_WIDTH / (openRateSeries.values.length - 1);
+                  const stepX =
+                    CHART_WIDTH / (openRateSeries.values.length - 1);
                   const x = index * stepX;
                   const y = CHART_HEIGHT - (value / openRateMax) * CHART_HEIGHT;
                   return (
@@ -659,6 +906,8 @@ const BulkNewsletterStudioPage = () => {
                       cx={x}
                       cy={y}
                       r={3}
+                      className="chart-dot"
+                      style={{ animationDelay: `${600 + index * 130}ms` }}
                       fill="#ffffff"
                       stroke="#FF6B35"
                       strokeWidth={2}
@@ -679,6 +928,7 @@ const BulkNewsletterStudioPage = () => {
             <ChartCard
               title="Device Client Analytics"
               subtitle="Mobile app vs Desktop vs Tablet readers"
+              index={3}
             >
               <div className="relative mx-auto h-44 w-44">
                 <svg viewBox="0 0 200 200" className="h-full w-full">
@@ -690,7 +940,7 @@ const BulkNewsletterStudioPage = () => {
                     stroke="#f4f4f5"
                     strokeWidth="22"
                   />
-                  {deviceSegments.map((segment) => (
+                  {deviceSegments.map((segment, index) => (
                     <circle
                       key={segment.label}
                       cx="100"
@@ -700,13 +950,20 @@ const BulkNewsletterStudioPage = () => {
                       stroke={segment.color}
                       strokeWidth="22"
                       strokeDasharray={segment.dash}
+                      className="donut-seg"
+                      style={
+                        {
+                          "--donut-c": `${DEVICE_CIRCUMFERENCE}px`,
+                          animationDelay: `${index * 220}ms`,
+                        } as React.CSSProperties
+                      }
                       transform={`rotate(${segment.rotation} 100 100)`}
                     />
                   ))}
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <span className="text-xl font-extrabold tracking-tight text-neutral-900">
-                    38.5k
+                    <CountUp value={38.5} decimals={1} />k
                   </span>
                   <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">
                     Readers
@@ -736,8 +993,8 @@ const BulkNewsletterStudioPage = () => {
             </ChartCard>
 
             {/* Device Client Analytics */}
-          </div>
-        </>
+          </Reveal>
+        </div>
       ) : (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-neutral-300 bg-white px-6 py-20 text-center">
           <span className="flex h-14 w-14 items-center justify-center rounded-2xl border border-orange-100 bg-orange-50">

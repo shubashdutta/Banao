@@ -112,6 +112,147 @@
   animation: fadeInUp 0.2s ease-out both;
 }
 
+/* ---------- Marketing chart animations ---------- */
+/* Base state = hidden. Animations only start once the wrapper gets the
+   `reveal-active` class (set by <Reveal> when it scrolls into view). */
+
+@keyframes chartDraw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.chart-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.reveal-active .chart-line {
+  animation: chartDraw 1.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes chartAreaFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.chart-area {
+  opacity: 0;
+}
+
+.reveal-active .chart-area {
+  animation: chartAreaFade 1s ease-out forwards;
+}
+
+.chart-dot {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.reveal-active .chart-dot {
+  animation: dotPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes dotPop {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Donut sweep: --donut-c is set inline to the ring circumference */
+.donut-seg {
+  opacity: 0;
+}
+
+.reveal-active .donut-seg {
+  animation: donutDraw 1.2s cubic-bezier(0.45, 0, 0.2, 1) forwards;
+}
+
+@keyframes donutDraw {
+  from {
+    stroke-dashoffset: var(--donut-c, 440);
+    opacity: 0.3;
+  }
+  to {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-rise-in {
+  opacity: 0;
+}
+
+.reveal-active .animate-rise-in {
+  animation: riseIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ---------- Dashboard revenue bar chart ---------- */
+
+/* Bars grow upward from the baseline */
+@keyframes barGrow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+.reveal-active .bar-grow {
+  transform-origin: bottom;
+  animation: barGrow 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes shimmerSweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* Accessibility: respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .chart-line,
+  .chart-area,
+  .chart-dot,
+  .donut-seg,
+  .bar-grow,
+  .animate-rise-in {
+    animation: none !important;
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 /* Container */
 .container {
   width: 100%;

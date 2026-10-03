@@ -28,7 +28,7 @@ type Ticket = {
   customer: string;
   phone: string;
   createdAt: string;
-  evidencePhoto: string;
+  evidencePhotos: string[];
   messages: ChatMessage[];
 };
 
@@ -46,8 +46,12 @@ const tickets: Ticket[] = [
     customer: "Binita Shrestha",
     phone: "+977-9841234567",
     createdAt: "2026-07-28 11:10 AM",
-    evidencePhoto:
-      "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=1200&auto=format&fit=crop",
+    evidencePhotos: [
+      "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=400&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?q=80&w=400&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1585704032915-c3400ca199e7?q=80&w=400&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=400&auto=format&fit=crop",
+    ],
     messages: [
       {
         id: "msg-1",
@@ -212,24 +216,37 @@ const SupportPage = () => {
             </button>
           </div>
 
-          <div className="flex flex-col gap-5 p-5">
+          <div className="flex flex-col gap-4 p-4">
             {/* Dispute evidence photos */}
-            <div className="rounded-2xl border border-neutral-200/70 bg-neutral-50/60 p-4">
-              <div className="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-wider text-neutral-500">
-                <ImageIcon className="h-3.5 w-3.5 text-[#FF6B35]" />
-                Dispute Evidence Photos
+            <div className="rounded-2xl border border-neutral-200/70 bg-neutral-50/60 p-3.5">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-wider text-neutral-500">
+                  <ImageIcon className="h-3.5 w-3.5 text-[#FF6B35]" />
+                  Dispute Evidence Photos
+                </div>
+                <span className="text-[10px] font-bold text-neutral-400">
+                  {selected.evidencePhotos.length} attached
+                </span>
               </div>
-              <div className="mt-3 overflow-hidden rounded-xl border border-neutral-200 bg-white">
-                <img
-                  src={selected.evidencePhoto}
-                  alt="Dispute evidence - bathroom plumbing setup"
-                  className="h-56 w-full object-cover sm:h-64"
-                />
+              <div className="mt-2.5 grid grid-cols-4 gap-2">
+                {selected.evidencePhotos.map((photo, index) => (
+                  <div
+                    key={photo}
+                    className="overflow-hidden rounded-lg border border-neutral-200 bg-white"
+                  >
+                    <img
+                      src={photo}
+                      alt={`Dispute evidence photo ${index + 1}`}
+                      loading="lazy"
+                      className="aspect-square w-full object-cover transition duration-300 hover:scale-105"
+                    />
+                  </div>
+                ))}
               </div>
             </div>
 
             {/* Conversation thread */}
-            <div className="flex flex-col gap-5">
+            <div className="flex max-h-[300px] flex-col gap-4 overflow-y-auto pr-1">
               {messages.map((message) =>
                 message.role === "admin" ? (
                   <div key={message.id} className="flex justify-end">
@@ -239,12 +256,12 @@ const SupportPage = () => {
                         <span>•</span>
                         <span>{message.time}</span>
                       </div>
-                      <div className="mt-1.5 rounded-2xl rounded-tr-sm border border-orange-100 bg-orange-50/70 p-4">
+                      <div className="mt-1.5 rounded-2xl rounded-tr-sm border border-orange-100 bg-orange-50/70 p-3.5">
                         <div className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-[#FF6B35]">
                           <CheckCircle2 className="h-3.5 w-3.5" />
                           Admin Response
                         </div>
-                        <p className="mt-2 text-[13.5px] leading-relaxed text-neutral-700">
+                        <p className="mt-1.5 text-[13.5px] leading-relaxed text-neutral-700">
                           {message.text}
                         </p>
                       </div>
@@ -260,7 +277,7 @@ const SupportPage = () => {
                         <span>•</span>
                         <span>{message.time}</span>
                       </div>
-                      <div className="mt-1.5 rounded-2xl rounded-tl-sm border border-neutral-200 bg-neutral-50 p-4">
+                      <div className="mt-1.5 rounded-2xl rounded-tl-sm border border-neutral-200 bg-neutral-50 p-3.5">
                         <p className="text-[13.5px] leading-relaxed text-neutral-700">
                           {message.text}
                         </p>
@@ -274,17 +291,18 @@ const SupportPage = () => {
             {/* Admin reply input */}
             <form
               onSubmit={handleSend}
-              className="flex flex-col gap-3 border-t border-neutral-100 pt-5 sm:flex-row sm:items-center"
+              className="flex flex-col gap-2 border-t border-neutral-100 pt-3.5 sm:flex-row sm:items-center"
             >
               <input
                 value={reply}
                 onChange={(event) => setReply(event.target.value)}
                 placeholder="Type official admin response to user..."
-                className="h-11 w-full flex-1 rounded-xl border border-neutral-200 bg-neutral-50 px-4 text-sm outline-none transition focus:border-[#FF6B35] focus:bg-white"
+                className="h-10 w-full flex-1 rounded-xl border border-neutral-200 bg-neutral-50 px-4 text-sm outline-none transition focus:border-[#FF6B35] focus:bg-white"
               />
               <button
                 type="submit"
-                className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#FF6B35] px-5 text-sm font-bold text-white shadow-sm shadow-orange-500/25 transition hover:bg-[#f45d26] active:scale-[0.98]"
+                disabled={!reply.trim()}
+                className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#FF6B35] px-5 text-sm font-bold text-white shadow-sm shadow-orange-500/25 transition hover:bg-[#f45d26] active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[#FF6B35]"
               >
                 <Send className="h-4 w-4" />
                 Reply

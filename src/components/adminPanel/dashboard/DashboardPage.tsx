@@ -15,6 +15,17 @@ import {
   Wallet,
   Wrench,
 } from "lucide-react";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  LabelList,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 const kpis = [
   {
@@ -51,15 +62,130 @@ const kpis = [
   },
 ];
 
-const weeklyRevenue = [
-  { day: "Sun", value: 42 },
-  { day: "Mon", value: 65 },
-  { day: "Tue", value: 58 },
-  { day: "Wed", value: 80 },
-  { day: "Thu", value: 72 },
-  { day: "Fri", value: 95 },
-  { day: "Sat", value: 88 },
-];
+type RevenueRange = "Day" | "Week" | "Month";
+
+type RevenuePoint = { label: string; value: number };
+
+type RevenueSeries = {
+  badge: string;
+  total: string;
+  growth: string;
+  vs: string;
+  points: RevenuePoint[];
+  areas: Array<{ l: string; v: string; pct: string }>;
+};
+
+const revenueRanges: RevenueRange[] = ["Day", "Week", "Month"];
+
+const BRAND_ORANGE = "#FF6B35";
+const MUTED_BAR = "#f5f5f5";
+
+/** Values are in thousands (Rs. k) and each set sums to its own total. */
+const revenueSeries: Record<RevenueRange, RevenueSeries> = {
+  Day: {
+    badge: "Today",
+    total: "Rs. 2,48,500",
+    growth: "+18.2%",
+    vs: "vs yesterday",
+    points: [
+      { label: "8 AM", value: 18.5 },
+      { label: "10 AM", value: 26.4 },
+      { label: "12 PM", value: 34.2 },
+      { label: "2 PM", value: 41.8 },
+      { label: "4 PM", value: 38.6 },
+      { label: "6 PM", value: 44.7 },
+      { label: "8 PM", value: 30.9 },
+      { label: "10 PM", value: 13.4 },
+    ],
+    areas: [
+      { l: "Kathmandu", v: "Rs. 1.5L", pct: "62%" },
+      { l: "Pokhara", v: "Rs. 62k", pct: "25%" },
+      { l: "Lalitpur", v: "Rs. 36.5k", pct: "13%" },
+    ],
+  },
+  Week: {
+    badge: "This week",
+    total: "Rs. 8,42,300",
+    growth: "+12.4%",
+    vs: "vs last week",
+    points: [
+      { label: "Sun", value: 70.8 },
+      { label: "Mon", value: 109.5 },
+      { label: "Tue", value: 97.7 },
+      { label: "Wed", value: 134.8 },
+      { label: "Thu", value: 121.3 },
+      { label: "Fri", value: 160 },
+      { label: "Sat", value: 148.2 },
+    ],
+    areas: [
+      { l: "Kathmandu", v: "Rs. 5.1L", pct: "61%" },
+      { l: "Pokhara", v: "Rs. 2.1L", pct: "25%" },
+      { l: "Lalitpur", v: "Rs. 1.2L", pct: "14%" },
+    ],
+  },
+  Month: {
+    badge: "This month",
+    total: "Rs. 24,86,900",
+    growth: "+9.6%",
+    vs: "vs last month",
+    points: [
+      { label: "W1", value: 452.3 },
+      { label: "W2", value: 518.7 },
+      { label: "W3", value: 486.4 },
+      { label: "W4", value: 561.2 },
+      { label: "W5", value: 468.3 },
+    ],
+    areas: [
+      { l: "Kathmandu", v: "Rs. 15.2L", pct: "61%" },
+      { l: "Pokhara", v: "Rs. 6.2L", pct: "25%" },
+      { l: "Lalitpur", v: "Rs. 3.5L", pct: "14%" },
+    ],
+  },
+};
+
+type RevenueTickProps = {
+  x?: number;
+  y?: number;
+  payload?: RevenuePoint;
+  maxValue: number;
+};
+
+/** X-axis label - the peak day is highlighted in the brand colour. */
+const RevenueTick = ({ x = 0, y = 0, payload, maxValue }: RevenueTickProps) => {
+  if (!payload) return null;
+  return (
+    <text
+      x={x}
+      y={y + 16}
+      textAnchor="middle"
+      fontSize={12}
+      fontWeight={700}
+      fill={payload.value === maxValue ? BRAND_ORANGE : "#a3a3a3"}
+    >
+      {payload.label}
+    </text>
+  );
+};
+
+type RevenueTooltipProps = {
+  active?: boolean;
+  payload?: Array<{ payload?: RevenuePoint }>;
+};
+
+const RevenueTooltip = ({ active, payload }: RevenueTooltipProps) => {
+  const point = payload?.[0]?.payload;
+  if (!active || !point) return null;
+  return (
+    <div className="rounded-xl border border-neutral-200/70 bg-white px-3 py-2 shadow-lg shadow-neutral-900/5">
+      <div className="text-[11px] font-bold uppercase tracking-wider text-neutral-400">
+        {point.label}
+      </div>
+      <div className="text-sm font-extrabold text-neutral-900 mt-0.5">
+        Rs. {point.value}k
+      </div>
+    </div>
+  );
+};
 
 const services = [
   { name: "Home Cleaning", bookings: 184, pct: 82, color: "bg-[#FF6B35]" },
@@ -155,7 +281,9 @@ const providers = [
 ];
 
 const DashboardPage = () => {
-  const maxBar = Math.max(...weeklyRevenue.map((d) => d.value));
+  const [range, setRange] = React.useState<RevenueRange>("Week");
+  const series = revenueSeries[range];
+  const maxBar = Math.max(...series.points.map((p) => p.value));
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -223,54 +351,89 @@ const DashboardPage = () => {
               <h3 className="font-bold text-neutral-900 flex items-center gap-2">
                 Revenue Overview
                 <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-orange-50 text-[#FF6B35] border border-orange-100">
-                  This week
+                  {series.badge}
                 </span>
               </h3>
               <p className="text-[13px] text-neutral-500 mt-1">
                 Total{" "}
-                <span className="font-bold text-neutral-800">Rs. 8,42,300</span>{" "}
-                - <span className="text-emerald-600 font-semibold">+12.4%</span>{" "}
-                vs last week
+                <span className="font-bold text-neutral-800">{series.total}</span>{" "}
+                - <span className="text-emerald-600 font-semibold">{series.growth}</span>{" "}
+                {series.vs}
               </p>
             </div>
             <div className="flex items-center gap-2">
-              {["Day", "Week", "Month"].map((t, i) => (
+              {revenueRanges.map((t) => (
                 <button
                   key={t}
-                  className={`h-8 px-3 rounded-full text-xs font-bold border transition ${i === 1 ? "bg-neutral-900 text-white border-neutral-900" : "bg-white text-neutral-500 border-neutral-200 hover:bg-neutral-50"}`}
+                  onClick={() => setRange(t)}
+                  className={`h-8 px-3 rounded-full text-xs font-bold border transition ${t === range ? "bg-neutral-900 text-white border-neutral-900" : "bg-white text-neutral-500 border-neutral-200 hover:bg-neutral-50"}`}
                 >
                   {t}
                 </button>
               ))}
             </div>
           </div>
-          <div className="mt-5 flex items-end gap-3 h-[210px] px-1">
-            {weeklyRevenue.map((d) => (
-              <div
-                key={d.day}
-                className="flex-1 flex flex-col items-center gap-2 h-full justify-end"
+          <div className="mt-5 px-1">
+            <ResponsiveContainer width="100%" height={210}>
+              <BarChart
+                data={series.points}
+                margin={{ top: 26, right: 8, left: 8, bottom: 0 }}
+                barCategoryGap="24%"
               >
-                <div className="text-[11px] font-bold text-neutral-500">
-                  {d.value}k
-                </div>
-                <div
-                  className={`w-full max-w-[56px] rounded-xl ${d.value === maxBar ? "bg-gradient-to-t from-[#FF6B35] to-[#ff9a62] shadow-lg shadow-orange-500/25" : "bg-neutral-100"}`}
-                  style={{ height: `${(d.value / maxBar) * 140}px` }}
+                <defs>
+                  <linearGradient
+                    id="revenueMaxBar"
+                    x1="0"
+                    y1="1"
+                    x2="0"
+                    y2="0"
+                  >
+                    <stop offset="0%" stopColor={BRAND_ORANGE} />
+                    <stop offset="100%" stopColor="#ff9a62" />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid vertical={false} stroke="#f5f5f5" />
+                <XAxis
+                  dataKey="label"
+                  axisLine={false}
+                  tickLine={false}
+                  height={24}
+                  interval={0}
+                  tick={<RevenueTick maxValue={maxBar} />}
                 />
-                <div
-                  className={`text-xs font-bold ${d.value === maxBar ? "text-[#FF6B35]" : "text-neutral-400"}`}
+                <YAxis hide domain={[0, "dataMax + 15"]} />
+                <Tooltip
+                  cursor={{ fill: "rgba(245,245,245,0.65)" }}
+                  content={<RevenueTooltip />}
+                />
+                <Bar
+                  dataKey="value"
+                  maxBarSize={56}
+                  radius={[12, 12, 12, 12]}
                 >
-                  {d.day}
-                </div>
-              </div>
-            ))}
+                  {series.points.map((p) => (
+                    <Cell
+                      key={p.label}
+                      fill={
+                        p.value === maxBar ? "url(#revenueMaxBar)" : MUTED_BAR
+                      }
+                    />
+                  ))}
+                  <LabelList
+                    dataKey="value"
+                    position="top"
+                    offset={10}
+                    fill="#737373"
+                    fontSize={11}
+                    fontWeight={700}
+                    formatter={(v) => `${v}k`}
+                  />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
           </div>
           <div className="mt-4 pt-4 border-t border-neutral-100 grid grid-cols-3 gap-3">
-            {[
-              { l: "Kathmandu", v: "Rs. 5.1L", pct: "61%" },
-              { l: "Pokhara", v: "Rs. 2.1L", pct: "25%" },
-              { l: "Lalitpur", v: "Rs. 1.2L", pct: "14%" },
-            ].map((c) => (
+            {series.areas.map((c) => (
               <div
                 key={c.l}
                 className="rounded-xl bg-neutral-50 border border-neutral-100 px-3.5 py-3"
