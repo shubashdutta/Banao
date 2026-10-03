@@ -1,24 +1,26 @@
-<<<<<<< HEAD
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Banao - Enterprise Home Services Admin Dashboard
 
-# Run and deploy your AI Studio app
+A high-performance, professional admin dashboard built for the "Banao" platform to manage service providers, customers, bookings, real-time tracking, RBAC, pricing, and enterprise configurations.
 
-This contains everything you need to run your app locally.
+## 🚀 Tech Stack
 
-View your app in AI Studio: https://ai.studio/apps/3273f043-34a0-414d-9c49-06625bb69178
+- **Framework:** React (Vite / Next.js architecture)
+- **Styling:** Tailwind CSS (Custom enterprise color palette & typography)
+- **Icons:** Lucide React
+- **Typography:** Plus Jakarta Sans
+- **State & Routing:** React Router, React Hooks
 
-## Run Locally
+## 🌟 Key Modules & Features
 
-**Prerequisites:**  Node.js
+- **Enterprise RBAC & Employees:** Granular permission matrix, role management, and audit logs.
+- **Service & Category Management:** Dynamic taxonomy handling for multi-level service categories.
+- **Surge & Pricing Engine:** Real-time commission adjustments and dynamic multiplier configurations.
+- **Global Locations:** Multi-city operational zone management (Kathmandu, Pokhara, Lalitpur, etc.).
+- **System & Enterprise Settings:** Legal entities, PAN/VAT credentials, SMS gateways (Aakash/Sparrow), and payment gateways (eSewa, Khalti, Fonepay).
+- **AI Analytics & Reports:** Enterprise-grade reporting and data visualization.
 
+## 📦 Getting Started Locally
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
-=======
-# Banao-FE
->>>>>>> 9b94adb5e0f8c4c74c722b2ce840c819a62f8892
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/shubashdutta/Banao.git](https://github.com/shubashdutta/Banao.git)
