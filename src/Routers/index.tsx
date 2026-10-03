@@ -23,6 +23,7 @@ import SupportPage from "@/components/adminPanel/supports/SupportPage";
 import MarketingPage from "@/components/adminPanel/marketing/MarketingPage";
 import RbacEmployeesPage from "@/components/adminPanel/rbac-employees/RbacEmployeesPage";
 import HistoryPage from "@/components/adminPanel/history/HistoryPage";
+import SettingPages from "@/components/adminPanel/settings/SettingPages";
 
 const Index = () => {
   return (
@@ -55,6 +56,7 @@ const Index = () => {
           <Route path="/marketing" element={<MarketingPage />} />
           <Route path="rbac-employees" element={<RbacEmployeesPage />} />
           <Route path="/history" element={<HistoryPage />} />
+          <Route path="/settings" element={<SettingPages />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>

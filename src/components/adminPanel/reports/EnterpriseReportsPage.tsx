@@ -445,7 +445,7 @@ const EnterpriseReportsPage = () => {
         <header className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-[27px] font-bold leading-tight tracking-[-0.025em] text-neutral-900 sm:text-[30px]">
+              <h1 className="text-[27px] font-semibold leading-tight tracking-[-0.025em] text-neutral-900 sm:text-[30px]">
                 Enterprise Financial & Operational Reports
               </h1>
 
@@ -518,7 +518,7 @@ const EnterpriseReportsPage = () => {
                   </span>
                 </div>
 
-                <p className="mt-3 text-2xl font-extrabold tracking-tight text-neutral-900">
+                <p className="mt-3 text-2xl font-semibold  tracking-tight text-neutral-900">
                   {stat.value}
                 </p>
 

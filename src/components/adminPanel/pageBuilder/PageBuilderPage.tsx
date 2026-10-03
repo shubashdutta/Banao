@@ -21,7 +21,7 @@ const PageBuilderPage = () => {
       <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5 flex-wrap">
-            <h1 className="text-2xl font-extrabold tracking-tight text-neutral-900">Dynamic CMS & Form Builder</h1>
+            <h1 className="text-2xl font-semibold  tracking-tight text-neutral-900">Dynamic CMS & Form Builder</h1>
             <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-orange-50 text-[#FF6B35] border border-orange-100">No-Code Engine</span>
           </div>
           <p className="text-sm text-neutral-500 mt-1.5">Build SEO-optimized static web pages, terms & conditions, and custom dynamic intake forms with file upload fields.</p>

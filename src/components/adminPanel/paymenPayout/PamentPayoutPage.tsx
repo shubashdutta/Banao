@@ -37,7 +37,7 @@ const PamentPayoutPage = () => {
     <div className="flex flex-col gap-5">
       <div>
         <div className="flex items-center gap-2.5 flex-wrap">
-          <h1 className="text-2xl font-extrabold tracking-tight text-neutral-900">Provider Payout Management</h1>
+          <h1 className="text-2xl font-semibold  tracking-tight text-neutral-900">Provider Payout Management</h1>
           <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-orange-50 text-[#FF6B35] border border-orange-100">Automated Settlement</span>
         </div>
         <p className="text-sm text-neutral-500 mt-1.5">Review earnings settlement requests, process batch payouts via eSewa/Khalti, and export financial audit reports.</p>
@@ -45,17 +45,17 @@ const PamentPayoutPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white border border-neutral-200/70 rounded-2xl p-5 shadow-sm">
           <div className="flex items-center justify-between"><span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400">Pending Payout Queue</span><span className="w-9 h-9 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center"><Clock className="w-4 h-4 text-amber-600" /></span></div>
-          <div className="text-2xl font-extrabold text-neutral-900 mt-2">NPR Rs. 205,700</div>
+          <div className="text-2xl font-semibold  text-neutral-900 mt-2">NPR Rs. 205,700</div>
           <div className="text-xs font-semibold text-neutral-500 mt-1 flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> 4 Pending Requests</div>
         </div>
         <div className="bg-white border border-neutral-200/70 rounded-2xl p-5 shadow-sm">
           <div className="flex items-center justify-between"><span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400">Total Paid Out</span><span className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center"><CheckCircle2 className="w-4 h-4 text-emerald-600" /></span></div>
-          <div className="text-2xl font-extrabold text-neutral-900 mt-2">NPR Rs. 122,825</div>
+          <div className="text-2xl font-semibold  text-neutral-900 mt-2">NPR Rs. 122,825</div>
           <div className="text-xs font-semibold text-neutral-500 mt-1 flex items-center gap-1"><CheckCircle2 className="w-3.5 h-3.5" /> Settled to Nepalese Providers</div>
         </div>
         <div className="bg-white border border-neutral-200/70 rounded-2xl p-5 shadow-sm">
           <div className="flex items-center justify-between"><span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400">Min Payout Threshold</span><span className="w-9 h-9 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center"><Wallet className="w-4 h-4 text-[#FF6B35]" /></span></div>
-          <div className="text-2xl font-extrabold text-neutral-900 mt-2">NPR Rs. 1,000</div>
+          <div className="text-2xl font-semibold  text-neutral-900 mt-2">NPR Rs. 1,000</div>
           <div className="text-xs font-semibold text-neutral-500 mt-1 flex items-center gap-1"><Wallet className="w-3.5 h-3.5" /> Auto-Enforced Policy</div>
         </div>
       </div>

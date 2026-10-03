@@ -113,7 +113,7 @@ const SupportPage = () => {
     <div className="flex flex-col gap-5">
       {/* Page header */}
       <div>
-        <h1 className="flex items-center gap-2.5 text-2xl font-extrabold tracking-tight text-neutral-900">
+        <h1 className="flex items-center gap-2.5 text-2xl font-semibold tracking-tight text-neutral-900">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-orange-100 bg-orange-50">
             <HelpCircle className="h-5 w-5 text-[#FF6B35]" />
           </span>
@@ -235,9 +235,7 @@ const SupportPage = () => {
                   <div key={message.id} className="flex justify-end">
                     <div className="w-full max-w-xl">
                       <div className="flex items-center justify-end gap-2 text-[11px] font-bold text-neutral-400">
-                        <span className="text-[#FF6B35]">
-                          {message.sender}
-                        </span>
+                        <span className="text-[#FF6B35]">{message.sender}</span>
                         <span>•</span>
                         <span>{message.time}</span>
                       </div>

@@ -20,7 +20,7 @@ const CommissionPage = () => {
   return (
     <div className="flex flex-col gap-5">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight text-neutral-900">Commission & Surge Pricing Engine</h1>
+        <h1 className="text-2xl font-semibold  tracking-tight text-neutral-900">Commission & Surge Pricing Engine</h1>
         <p className="text-sm text-neutral-500 mt-1">Configure default platform commission, category overrides, and holiday surge multipliers.</p>
       </div>
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">

@@ -95,9 +95,9 @@ const AIAnalyticsPage = () => {
           <span className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center shrink-0">
             <BrainCircuit className="w-5 h-5 text-[#FF6B35]" />
           </span>
-          <h1 className="text-2xl font-extrabold tracking-tight text-neutral-900">
-            <span className="text-[#FF6B35]">BOLAO</span> AI Intelligence
-            &amp; Predictive Analytics
+          <h1 className="text-2xl font-semibold  tracking-tight text-neutral-900">
+            <span className="text-[#FF6B35]">BOLAO</span> AI Intelligence &amp;
+            Predictive Analytics
           </h1>
         </div>
         <p className="text-sm text-neutral-500 mt-1.5">

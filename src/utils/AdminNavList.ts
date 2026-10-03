@@ -129,10 +129,11 @@ export const AdminNavList = [
     link: "/reviews",
   },
   {
-    label: "Support & Disputes",
+    label: "Support_Disputes",
     id: "support_Disputes",
     icon: HelpCircle,
     link: "/help-center",
+    badge: "1 High",
   },
   {
     label: "Marketing",
