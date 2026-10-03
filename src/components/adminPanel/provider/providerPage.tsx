@@ -234,7 +234,7 @@ const ProviderPage = () => {
               1 Pending
             </span>
           </div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-neutral-900 mt-1">
+          <h1 className="text-2xl font-semibold tracking-tight text-neutral-900 mt-1">
             Providers
           </h1>
           <p className="text-sm text-neutral-500 mt-0.5">
@@ -264,7 +264,7 @@ const ProviderPage = () => {
             <div className="text-[11px] font-bold uppercase tracking-wider text-neutral-400">
               {l}
             </div>
-            <div className="text-xl font-extrabold text-neutral-900 mt-1">
+            <div className="text-xl font-semibold text-neutral-900 mt-1">
               {v}
             </div>
             <div className="text-xs font-medium text-neutral-500 mt-0.5">

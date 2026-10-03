@@ -169,7 +169,7 @@ const DashboardPage = () => {
               Live - Nepal
             </span>
           </div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-neutral-900 mt-1">
+          <h1 className="text-2xl font-semibold tracking-tight text-neutral-900 mt-1">
             Namaste, Shubash
           </h1>
           <p className="text-sm text-neutral-500 mt-0.5">
@@ -205,7 +205,7 @@ const DashboardPage = () => {
                   {k.sub.split(" ")[0]}
                 </span>
               </div>
-              <div className="mt-4 text-2xl font-extrabold tracking-tight text-neutral-900">
+              <div className="mt-4 text-2xl font-semibold tracking-tight text-neutral-900">
                 {k.value}
               </div>
               <div className="text-[13px] font-medium text-neutral-500 mt-0.5">

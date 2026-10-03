@@ -1,13 +1,23 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import App from "@/App";
-import LoginPage from "@/components/LoginPage";
 import DashboardPage from "@/components/adminPanel/dashboard/DashboardPage";
 import CustomerPage from "@/components/adminPanel/customers/CustomerPage";
 import ProviderPage from "@/components/adminPanel/provider/providerPage";
 import AdminLayout from "@/components/adminPanel/adminLayout/Layout";
 import BookingListPage from "@/components/adminPanel/booking/bookingListPage";
+import GobalLocationPage from "@/components/adminPanel/gobalLocation/gobalLocationPage";
+import LiveTrackingPage from "@/components/adminPanel/liveTracking/LiveTrackingPage";
+import CategoryPage from "@/components/adminPanel/category/CategoryPage";
+import TimeSlotPage from "@/components/adminPanel/timeSlot/TimeSlotPage";
 import NotFoundPage from "@/components/NotFoundPage";
+import LoginPage from "@/components/loginPage";
+import PamentPayoutPage from "@/components/adminPanel/paymenPayout/PamentPayoutPage";
+import PageBuilderPage from "@/components/adminPanel/pageBuilder/PageBuilderPage";
+import NotificationPage from "@/components/adminPanel/notifications/NotificationPage";
+import CommissionPage from "@/components/adminPanel/commission/CommissionPage";
+import AIAnalyticsPage from "@/components/adminPanel/ai_Analytics/AIAnalyticsPage";
+import ReportsPage from "@/components/adminPanel/reports/ReportsPage";
 
 const Index = () => {
   return (
@@ -22,6 +32,18 @@ const Index = () => {
           <Route path="/provider" element={<ProviderPage />} />
 
           <Route path="/booking" element={<BookingListPage />} />
+          <Route path="/location" element={<GobalLocationPage />} />
+          <Route path="/live-tracking" element={<LiveTrackingPage />} />
+          <Route path="/categorys" element={<CategoryPage />} />
+          <Route path="/time-slots" element={<TimeSlotPage />} />
+
+          <Route path="/payment-payouts" element={<PamentPayoutPage />} />
+          <Route path="/page-build" element={<PageBuilderPage />} />
+          <Route path="/notifications" element={<NotificationPage />} />
+          <Route path="/commission" element={<CommissionPage />} />
+          <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/pricing" element={<CommissionPage />} />
+          <Route path="/ai-analytics" element={<AIAnalyticsPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
