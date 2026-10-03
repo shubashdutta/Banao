@@ -17,7 +17,12 @@ import PageBuilderPage from "@/components/adminPanel/pageBuilder/PageBuilderPage
 import NotificationPage from "@/components/adminPanel/notifications/NotificationPage";
 import CommissionPage from "@/components/adminPanel/commission/CommissionPage";
 import AIAnalyticsPage from "@/components/adminPanel/ai_Analytics/AIAnalyticsPage";
-import ReportsPage from "@/components/adminPanel/reports/ReportsPage";
+import EnterpriseReportsPage from "@/components/adminPanel/reports/EnterpriseReportsPage";
+import ReviewPage from "@/components/adminPanel/reviews/ReviewPage";
+import SupportPage from "@/components/adminPanel/supports/SupportPage";
+import MarketingPage from "@/components/adminPanel/marketing/MarketingPage";
+import RbacEmployeesPage from "@/components/adminPanel/rbac-employees/RbacEmployeesPage";
+import HistoryPage from "@/components/adminPanel/history/HistoryPage";
 
 const Index = () => {
   return (
@@ -41,9 +46,15 @@ const Index = () => {
           <Route path="/page-build" element={<PageBuilderPage />} />
           <Route path="/notifications" element={<NotificationPage />} />
           <Route path="/commission" element={<CommissionPage />} />
-          <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/reports" element={<EnterpriseReportsPage />} />
           <Route path="/pricing" element={<CommissionPage />} />
           <Route path="/ai-analytics" element={<AIAnalyticsPage />} />
+          <Route path="/reviews" element={<ReviewPage />} />
+
+          <Route path="/help-center" element={<SupportPage />} />
+          <Route path="/marketing" element={<MarketingPage />} />
+          <Route path="rbac-employees" element={<RbacEmployeesPage />} />
+          <Route path="/history" element={<HistoryPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
