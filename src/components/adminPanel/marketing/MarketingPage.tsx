@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   CalendarDays,
-  ChartColumn,
   FileText,
   Filter,
   LayoutDashboard,
@@ -20,6 +19,7 @@ import {
   Users,
   Zap,
 } from "lucide-react";
+import { BarChart3 as ChartColumn } from "lucide-react";
 
 type MarketingTab =
   | "Newsletter Dashboard"
@@ -829,7 +829,10 @@ const BulkNewsletterStudioPage = () => {
           </Reveal>
 
           {/* Bottom analytics */}
-          <Reveal className="grid grid-cols-1 gap-4 xl:grid-cols-2" threshold={0.1}>
+          <Reveal
+            className="grid grid-cols-1 gap-4 xl:grid-cols-2"
+            threshold={0.1}
+          >
             {/* Open Rate Trend */}
             <ChartCard
               title="Open Rate Trend %"
