@@ -30,7 +30,7 @@ const AddSubCategory = () => {
     fileError,
   ] = useFileInput(null, "PHOTO");
   return (
-    <form>
+    <form onSubmit={handleSubmit(() => console.log("hry"))}>
       <div className="  grid grid-cols-2 gap-2 max-h-96 overflow-y-auto  wrapper ">
         <div className=" col-span-1">
           <TextInput

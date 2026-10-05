@@ -18,7 +18,7 @@ const SubmiteBtn: FC<BtnProps> = ({ label }) => {
       </button>
 
       <button
-        type="button"
+        type="submit"
         className=" cursor-pointer px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-[#FF6B35] hover:bg-[#e85d28] shadow-lg shadow-[#FF6B35]/25 transition-all active:scale-95"
       >
         {label}
