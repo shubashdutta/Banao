@@ -9,8 +9,10 @@ import {
   Wallet,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useModal } from "@/providers/ModalProvider";
+import PaymentPayoutForm from "./PaymentPayoutForm";
 
-type PStatus = "PENDING" | "PAID" | "REJECTED";
+type PStatus = "PENDING" | "APPROVED" | "PAID" | "REJECTED";
 type Payout = {
   id: string;
   name: string;
@@ -162,7 +164,7 @@ type Payout = {
 //   },
 // ];
 
-const payouts: Payout[] = [
+const INITIAL_PAYOUTS: Payout[] = [
   {
     id: "PAY-8801",
     name: "Ram Shrestha",
@@ -309,8 +311,7 @@ const payouts: Payout[] = [
 const MIN_PAYOUT_THRESHOLD = 1000;
 
 /** Matches the "NPR Rs. 45,000" formatting already used across the payout table. */
-const formatNpr = (value: number) =>
-  `NPR Rs. ${value.toLocaleString("en-US")}`;
+const formatNpr = (value: number) => `NPR Rs. ${value.toLocaleString("en-US")}`;
 
 type StatCardProps = {
   label: string;
@@ -355,23 +356,39 @@ const PamentPayoutPage = () => {
   const [filter, setFilter] = useState<FilterId>("All");
   const [query, setQuery] = useState("");
   const [checked, setChecked] = useState<string[]>([]);
+  const [payouts, setPayouts] = useState<Payout[]>(INITIAL_PAYOUTS);
 
+  const { openModal } = useModal();
+
+  const handleAddPayment = () => {
+    openModal("Payment", <PaymentPayoutForm />, "medium");
+  };
   const navigate = useNavigate();
-  const filtered = useMemo(
-    () =>
-      payouts.filter((p) => {
-        const q = query.toLowerCase();
-        const mQ =
-          !q ||
-          p.id.toLowerCase().includes(q) ||
-          p.name.toLowerCase().includes(q) ||
-          p.account.includes(q);
-        if (filter === "Pending") return p.status === "PENDING" && mQ;
-        if (filter === "Paid") return p.status === "PAID" && mQ;
-        return mQ;
-      }),
-    [filter, query],
-  );
+
+  const updateStatus = (id: string, status: PStatus) =>
+    setPayouts((rows) => rows.map((p) => (p.id === id ? { ...p, status } : p)));
+
+  const filtered = useMemo(() => {
+    return payouts.filter((p) => {
+      const q = query.toLowerCase();
+
+      const mQ =
+        !q ||
+        p.id.toLowerCase().includes(q) ||
+        p.name.toLowerCase().includes(q) ||
+        p.account.includes(q);
+
+      if (filter === "Pending") {
+        return p.status === "PENDING" && mQ;
+      }
+
+      if (filter === "Paid") {
+        return p.status === "PAID" && mQ;
+      }
+
+      return mQ;
+    });
+  }, [filter, query, payouts]);
   const allChecked =
     filtered.length > 0 && filtered.every((p) => checked.includes(p.id));
   const toggleAll = () =>
@@ -393,25 +410,10 @@ const PamentPayoutPage = () => {
       paidNet: paidRows.reduce((sum, p) => sum + p.netNum, 0),
       threshold: MIN_PAYOUT_THRESHOLD,
     };
-  }, []);
+  }, [payouts]);
 
   return (
     <div className="flex flex-col gap-5">
-      {/* <div>
-        <div className="flex items-center gap-2.5 flex-wrap">
-          <h1 className="text-2xl font-semibold  tracking-tight text-neutral-900">
-            Provider Payout Management
-          </h1>
-          <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-orange-50 text-[#FF6B35] border border-orange-100">
-            Automated Settlement
-          </span>
-        </div>
-        <p className="text-sm text-neutral-500 mt-1.5">
-          Review settlements, process eSewa/Khalti payouts & export audit
-          reports.
-        </p>
-      </div> */}
-
       <div className="flex flex-col lg:flex-row gap-3 lg:items-center">
         {!showStats && (
           <div className="relative flex-1">
@@ -457,8 +459,8 @@ const PamentPayoutPage = () => {
             iconWrap="bg-amber-50 border border-amber-100"
             iconColor="text-amber-600"
           >
-            <Clock className="w-3.5 h-3.5" /> {statsSummary.pendingCount} Pending
-            Requests
+            <Clock className="w-3.5 h-3.5" /> {statsSummary.pendingCount}{" "}
+            Pending Requests
           </StatCard>
           <StatCard
             label="Total Paid Out"
@@ -481,40 +483,40 @@ const PamentPayoutPage = () => {
           </StatCard>
         </div>
       ) : (
-      <div className="bg-white border border-neutral-200/70 rounded-2xl shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm ">
-            <thead className="w-full">
-              <tr className="text-left text-xs font-bold uppercase tracking-wider text-white bg-[#FF6B35]">
-                <th className="px-4 py-3.5 w-10">
-                  <input
-                    type="checkbox"
-                    checked={allChecked}
-                    onChange={toggleAll}
-                    className="w-4 h-4 accent-[#FF6B35] cursor-pointer"
-                  />
-                </th>
+        <div className="bg-white border border-neutral-200/70 rounded-2xl shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm ">
+              <thead className="w-full">
+                <tr className="text-left text-xs font-bold uppercase tracking-wider text-white bg-[#FF6B35]">
+                  <th className="px-4 py-3.5 w-10">
+                    <input
+                      type="checkbox"
+                      checked={allChecked}
+                      onChange={toggleAll}
+                      className="w-4 h-4 accent-[#FF6B35] cursor-pointer"
+                    />
+                  </th>
 
-                <th className="px-4 py-3.5">ID</th>
+                  <th className="px-4 py-3.5">ID</th>
 
-                <th className="px-4 py-3.5">Provider</th>
+                  <th className="px-4 py-3.5">Provider</th>
 
-                <th className="px-4 py-3.5">Customer</th>
+                  <th className="px-4 py-3.5">Customer</th>
 
-                <th className="px-4 py-3.5 text-right">Earnings</th>
+                  <th className="px-4 py-3.5 text-right">Earnings</th>
 
-                <th className="px-4 py-3.5 text-right">Commission</th>
+                  <th className="px-4 py-3.5 text-right">Commission</th>
 
-                <th className="px-4 py-3.5 text-right">Net Pay</th>
+                  <th className="px-4 py-3.5 text-right">Net Pay</th>
 
-                <th className="px-4 py-3.5">Gateway</th>
+                  <th className="px-4 py-3.5">Gateway</th>
 
-                <th className="px-4 py-3.5 text-center">Status</th>
+                  <th className="px-4 py-3.5 text-center">Status</th>
 
-                <th className="px-4 py-3.5 text-right">Actions</th>
-              </tr>
-            </thead>
-            {/* <tbody>
+                  <th className="px-4 py-3.5 text-right">Actions</th>
+                </tr>
+              </thead>
+              {/* <tbody>
               {filtered.map((p) => (
                 <tr
                   key={p.id}
@@ -601,137 +603,153 @@ const PamentPayoutPage = () => {
               )}
             </tbody> */}
 
-            <tbody className="w-full">
-              {filtered.map((p) => (
-                <tr
-                  key={p.id}
-                  className="w-full border-b border-neutral-100 last:border-0 hover:bg-neutral-50/70 transition"
-                >
-                  {/* Checkbox */}
-                  <td className="px-4 py-3.5 w-10">
-                    <input
-                      type="checkbox"
-                      checked={checked.includes(p.id)}
-                      onChange={() => toggleOne(p.id)}
-                      className="w-4 h-4 accent-[#FF6B35] cursor-pointer"
-                    />
-                  </td>
-
-                  {/* ID */}
-                  <td className="px-4 py-3.5 w-[90px] text-[12px] text-neutral-900 whitespace-nowrap">
-                    {p.id}
-                  </td>
-
-                  {/* Provider */}
-                  <td className="px-4 py-3.5 w-[160px]">
-                    <div className="text-neutral-900 text-[12px] font-medium truncate">
-                      {p.name}
-                    </div>
-                    <div className="text-[12px] text-neutral-400 truncate">
-                      {p.code}
-                    </div>
-                  </td>
-
-                  {/* Customer */}
-                  <td className="px-4 py-3.5 w-[160px]">
-                    <div className="text-neutral-700 text-[12px] font-medium truncate">
-                      {p.customer_Name}
-                    </div>
-                    <div
-                      onClick={() => navigate("/live-tracking")}
-                      className=" cursor-pointer hover:text-orange-600 flex items-center gap-1 text-[11px] text-neutral-400 truncate"
-                    >
-                      <span className="truncate">{p.Customer_Address}</span>
-                      <Navigation className="w-3 h-3 shrink-0 text-neutral-400" />
-                    </div>
-                  </td>
-
-                  {/* Earnings */}
-                  <td className="px-4 py-3.5 text-right text-[12px] text-neutral-800 whitespace-nowrap">
-                    {p.earnings}
-                  </td>
-
-                  {/* Commission */}
-                  <td className="px-4 py-3.5 text-right text-[12px] text-red-500 whitespace-nowrap">
-                    {p.commission}
-                  </td>
-
-                  {/* Net Pay */}
-                  <td className="px-4 py-3.5 text-right text-[12px] text-[#FF6B35] font-semibold whitespace-nowrap">
-                    {p.net}
-                  </td>
-
-                  {/* Gateway */}
-                  <td className="px-4 py-3.5 w-[150px]">
-                    <div className="text-neutral-800 text-[12px] truncate">
-                      {p.gateway}
-                    </div>
-                    <div className="text-[11px] font-medium text-neutral-400 truncate">
-                      Acc: {p.account}
-                    </div>
-                  </td>
-
-                  {/* Status */}
-                  <td className="px-4 py-3.5 w-[110px] text-center">
-                    <span className="inline-flex text-[11px] px-3 py-1 rounded-full bg-neutral-900 text-white font-semibold">
-                      {p.status}
-                    </span>
-                  </td>
-
-                  {/* Actions */}
-                  <td className="px-4 py-3.5 w-[150px]">
-                    <div className="flex justify-end gap-1.5">
-                      {p.status === "PENDING" ? (
-                        <>
-                          <button className="h-8 px-3 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition">
-                            Approve
-                          </button>
-
-                          <button className="h-8 px-3 rounded-full bg-red-50 hover:bg-red-100 text-red-600 border border-red-100 text-xs font-bold transition">
-                            Reject
-                          </button>
-                        </>
-                      ) : (
-                        <span className="text-xs font-bold text-neutral-400">
-                          Settled
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-
-              {filtered.length === 0 && (
-                <tr>
-                  <td
-                    colSpan={10}
-                    className="px-5 py-12 text-center text-sm font-medium text-neutral-400"
+              <tbody className="w-full">
+                {filtered.map((p) => (
+                  <tr
+                    key={p.id}
+                    className="w-full border-b border-neutral-100 last:border-0 hover:bg-neutral-50/70 transition"
                   >
-                    No payouts match this filter.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-        <div className="px-5 py-3.5 border-t border-neutral-100 flex items-center justify-between text-[13px] font-medium text-neutral-500">
-          <span>
-            Showing {filtered.length} of {payouts.length} payouts
-            {checked.length > 0 ? ` - ${checked.length} selected` : ""}
-          </span>
-          <div className="flex gap-1.5">
-            {["1", "2"].map((pg, i) => (
-              <button
-                key={pg}
-                className={`w-8 h-8 rounded-full text-xs font-bold border transition ${i === 0 ? "bg-neutral-900 text-white border-neutral-900" : "bg-white border-neutral-200 hover:bg-neutral-50"}`}
-              >
-                {pg}
-              </button>
-            ))}
+                    {/* Checkbox */}
+                    <td className="px-4 py-3.5 w-10">
+                      <input
+                        type="checkbox"
+                        checked={checked.includes(p.id)}
+                        onChange={() => toggleOne(p.id)}
+                        className="w-4 h-4 accent-[#FF6B35] cursor-pointer"
+                      />
+                    </td>
+
+                    {/* ID */}
+                    <td className="px-4 py-3.5 w-[90px] text-[12px] text-neutral-900 whitespace-nowrap">
+                      {p.id}
+                    </td>
+
+                    {/* Provider */}
+                    <td className="px-4 py-3.5 w-[160px]">
+                      <div className="text-neutral-900 text-[12px] font-medium truncate">
+                        {p.name}
+                      </div>
+                      <div className="text-[12px] text-neutral-400 truncate">
+                        {p.code}
+                      </div>
+                    </td>
+
+                    {/* Customer */}
+                    <td className="px-4 py-3.5 w-[160px]">
+                      <div className="text-neutral-700 text-[12px] font-medium truncate">
+                        {p.customer_Name}
+                      </div>
+                      <div
+                        onClick={() => navigate("/live-tracking")}
+                        className=" cursor-pointer hover:text-orange-600 flex items-center gap-1 text-[11px] text-neutral-400 truncate"
+                      >
+                        <span className="truncate">{p.Customer_Address}</span>
+                        <Navigation className="w-3 h-3 shrink-0 text-neutral-400" />
+                      </div>
+                    </td>
+
+                    {/* Earnings */}
+                    <td className="px-4 py-3.5 text-right text-[12px] text-neutral-800 whitespace-nowrap">
+                      {p.earnings}
+                    </td>
+
+                    {/* Commission */}
+                    <td className="px-4 py-3.5 text-right text-[12px] text-red-500 whitespace-nowrap">
+                      {p.commission}
+                    </td>
+
+                    {/* Net Pay */}
+                    <td className="px-4 py-3.5 text-right text-[12px] text-[#FF6B35] font-semibold whitespace-nowrap">
+                      {p.net}
+                    </td>
+
+                    {/* Gateway */}
+                    <td className="px-4 py-3.5 w-[150px]">
+                      <div className="text-neutral-800 text-[12px] truncate">
+                        {p.gateway}
+                      </div>
+                      <div className="text-[11px] font-medium text-neutral-400 truncate">
+                        Acc: {p.account}
+                      </div>
+                    </td>
+
+                    {/* Status */}
+                    <td className="px-4 py-3.5 w-[110px] text-center">
+                      <span className="inline-flex text-[11px] px-3 py-1 rounded-full bg-neutral-900 text-white font-semibold">
+                        {p.status}
+                      </span>
+                    </td>
+
+                    {/* Actions */}
+                    <td className="px-4 py-3.5 w-[150px]">
+                      <div className="flex justify-end gap-1.5">
+                        {p.status === "PENDING" ? (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => updateStatus(p.id, "APPROVED")}
+                              className=" cursor-pointer h-8 px-3 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition"
+                            >
+                              Approve
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => updateStatus(p.id, "REJECTED")}
+                              className=" cursor-pointer h-8 px-3 rounded-full bg-red-50 hover:bg-red-100 text-red-600 border border-red-100 text-xs font-bold transition"
+                            >
+                              Reject
+                            </button>
+                          </>
+                        ) : p.status === "APPROVED" ? (
+                          <button
+                            type="button"
+                            onClick={handleAddPayment}
+                            className=" cursor-pointer h-8 px-3 rounded-full bg-[#FF6B35] hover:bg-orange-600 text-white text-xs font-bold transition"
+                          >
+                            Pay
+                          </button>
+                        ) : (
+                          <span className="text-xs font-bold text-neutral-400">
+                            {p.status === "PAID" ? "Settled" : "Rejected"}
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+
+                {filtered.length === 0 && (
+                  <tr>
+                    <td
+                      colSpan={10}
+                      className="px-5 py-12 text-center text-sm font-medium text-neutral-400"
+                    >
+                      No payouts match this filter.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+          <div className="px-5 py-3.5 border-t border-neutral-100 flex items-center justify-between text-[13px] font-medium text-neutral-500">
+            <span>
+              Showing {filtered.length} of {payouts.length} payouts
+              {checked.length > 0 ? ` - ${checked.length} selected` : ""}
+            </span>
+            <div className="flex gap-1.5">
+              {["1", "2"].map((pg, i) => (
+                <button
+                  key={pg}
+                  className={`w-8 h-8 rounded-full text-xs font-bold border transition ${i === 0 ? "bg-neutral-900 text-white border-neutral-900" : "bg-white border-neutral-200 hover:bg-neutral-50"}`}
+                >
+                  {pg}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-)}
+      )}
     </div>
   );
 };
