@@ -1,7 +1,11 @@
 import React, { useMemo, useState } from "react";
-import { Pencil, Plus, Search, Trash2, X } from "lucide-react";
+import { Pencil, Plus, Search, X } from "lucide-react";
+import { Badge } from "antd";
+import { useModal } from "@/providers/ModalProvider";
+import AddCategoryForm from "./AddCategoryForm";
+import AddSubCategory from "./AddSubCategory";
 
-type Sub = { en: string; ne: string; price: string };
+type Sub = { en: string; ne: string };
 type Cat = {
   title: string;
   neTag: string;
@@ -29,13 +33,12 @@ const categories: Cat[] = [
     featured: true,
     emergency: true,
     subs: [
-      { en: "Tap Leakage Repair", ne: "धारा मर्मत", price: "NPR Rs.500" },
+      { en: "Tap Leakage Repair", ne: "धारा मर्मत" },
       {
         en: "Water Tank Installation",
         ne: "ट्यांकी जडान",
-        price: "NPR Rs.2500",
       },
-      { en: "Commode & Basin Fitting", ne: "कमोड जडान", price: "NPR Rs.1800" },
+      { en: "Commode & Basin Fitting", ne: "कमोड जडान" },
     ],
   },
   {
@@ -53,14 +56,12 @@ const categories: Cat[] = [
       {
         en: "Short Circuit Repair",
         ne: "सर्ट सर्किट मर्मत",
-        price: "NPR Rs.800",
       },
       {
         en: "Inverter & Battery Wiring",
         ne: "इनverter वायरिङ",
-        price: "NPR Rs.1500",
       },
-      { en: "Fan & Light Installation", ne: "पंखा जडान", price: "NPR Rs.600" },
+      { en: "Fan & Light Installation", ne: "पंखा जडान" },
     ],
   },
   {
@@ -78,17 +79,14 @@ const categories: Cat[] = [
       {
         en: "Sofa & Mattress Shampoo",
         ne: "सोफा सरसफाइ",
-        price: "NPR Rs.2200",
       },
       {
         en: "Full House Deep Clean",
         ne: "फुल हाउस क्लिन",
-        price: "NPR Rs.4500",
       },
       {
         en: "Water Tank Sanitization",
         ne: "ट्यांकी सरसफाइ",
-        price: "NPR Rs.3000",
       },
     ],
   },
@@ -104,13 +102,12 @@ const categories: Cat[] = [
     featured: false,
     emergency: false,
     subs: [
-      { en: "Herbal Glow Facial", ne: "फेसियल", price: "NPR Rs.1800" },
+      { en: "Herbal Glow Facial", ne: "फेसियल" },
       {
         en: "Bridal Makeup Package",
         ne: "ब्राइडल मेकअप",
-        price: "NPR Rs.12000",
       },
-      { en: "Hair Spa & Keratin", ne: "हेयर स्पा", price: "NPR Rs.3500" },
+      { en: "Hair Spa & Keratin", ne: "हेयर स्पा" },
     ],
   },
   {
@@ -128,12 +125,10 @@ const categories: Cat[] = [
       {
         en: "AC Gas Refill R32/R410",
         ne: "एसी ग्यास भर्ने",
-        price: "NPR Rs.2800",
       },
       {
         en: "Washing Machine Repair",
         ne: "वासिङ मेसिन मर्मत",
-        price: "NPR Rs.1500",
       },
     ],
   },
@@ -144,9 +139,18 @@ type FilterId = "all" | "active" | "featured" | "emergency";
 const CategoryPage = () => {
   const [filter, setFilter] = useState<FilterId>("all");
   const [query, setQuery] = useState("");
+
+  const { openModal, closeModal } = useModal();
+  /** Seed data stays at module scope; the list is state so toggles re-render. */
+  const [cats, setCats] = useState<Cat[]>(categories);
+  /** Flips a single category's active flag, keyed by its unique slug. */
+  const toggleActive = (slug: string) =>
+    setCats((prev) =>
+      prev.map((c) => (c.slug === slug ? { ...c, active: !c.active } : c)),
+    );
   const filtered = useMemo(
     () =>
-      categories.filter((c) => {
+      cats.filter((c) => {
         const q = query.toLowerCase();
         const mQ =
           !q ||
@@ -158,32 +162,36 @@ const CategoryPage = () => {
         if (filter === "emergency") return c.emergency && mQ;
         return mQ;
       }),
-    [filter, query],
+    [cats, filter, query],
   );
   const pills: Array<{ id: FilterId; label: string }> = [
-    { id: "all", label: `All (${categories.length})` },
+    { id: "all", label: `All (${cats.length})` },
     { id: "active", label: "Active" },
     { id: "featured", label: "Featured" },
     { id: "emergency", label: "Emergency 24/7" },
   ];
+
+  const handleAddCategory = () => {
+    openModal("Create New Category", <AddCategoryForm />, "medium");
+  };
+
+  const handleSubCategory = () => {
+    openModal("Add Sub_Category", <AddSubCategory />, "small");
+  };
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5 flex-wrap">
-            <h1 className="text-2xl font-extrabold tracking-tight text-neutral-900">
-              Category Management System
+            <h1 className="text-xl font-bold tracking-tight text-neutral-900">
+              Category Management
             </h1>
-            <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-orange-50 text-[#FF6B35] border border-orange-100">
-              Live Taxonomy
-            </span>
           </div>
-          <p className="text-sm text-neutral-500 mt-1.5">
-            Manage main service categories, subcategories, Nepali localizations,
-            emergency toggles, and SEO metadata.
-          </p>
         </div>
-        <button className="h-10 px-4 rounded-full bg-[#FF6B35] hover:bg-[#e85a28] text-white text-sm font-bold shadow-md shadow-orange-500/25 flex items-center gap-1.5 transition shrink-0">
+        <button
+          onClick={handleAddCategory}
+          className=" cursor-pointer h-10 px-4 rounded-full bg-[#FF6B35] hover:bg-[#e85a28] text-white text-sm font-bold shadow-md shadow-orange-500/25 flex items-center gap-1.5 transition shrink-0"
+        >
           <Plus className="w-4 h-4" /> Create Main Category
         </button>
       </div>
@@ -222,8 +230,10 @@ const CategoryPage = () => {
                 className="absolute inset-0 w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10" />
-              <span className="absolute top-3 right-3 text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500 text-white shadow">
-                Active
+              <span
+                className={`absolute top-3 right-3 text-[11px] font-bold px-2.5 py-1 rounded-full text-white shadow ${c.active ? "bg-emerald-500" : "bg-neutral-500"}`}
+              >
+                {c.active ? "Active" : "Inactive"}
               </span>
               <div className="absolute bottom-0 left-0 right-0 p-4">
                 <div className="text-xs font-bold text-orange-400">
@@ -241,7 +251,7 @@ const CategoryPage = () => {
               <p className="text-[13px] font-medium text-neutral-500 leading-relaxed">
                 {c.desc}
               </p>
-              <div className="grid grid-cols-2 gap-2">
+              {/* <div className="grid grid-cols-2 gap-2">
                 <div className="rounded-xl bg-orange-50 border border-orange-100 px-3 py-2.5 text-center">
                   <div className="text-lg font-extrabold text-[#FF6B35]">
                     {c.commission}
@@ -258,44 +268,71 @@ const CategoryPage = () => {
                     Subcategories
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div>
-                <div className="text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-2">
+                {/* <div className="text-[11px] rounded-xl bg-orange-50 border border-orange-100 font-bold uppercase tracking-wider  mb-2">
                   Subcategories
-                </div>
-                <div className="flex flex-col gap-2">
+                </div> */}
+
+                <Badge
+                  count="Subcategories"
+                  className="text-[11px] rounded-xl font-bold uppercase tracking-wider !mb-1"
+                />
+                <div className="flex flex-col gap-1">
                   {c.subs.map((s) => (
                     <div
                       key={s.en}
-                      className="flex items-center gap-2 rounded-xl border border-neutral-100 bg-neutral-50/60 px-3 py-2"
+                      className="flex items-center gap-1 rounded-xl border border-neutral-100 bg-neutral-50/60 px-3 py-2"
                     >
                       <div className="flex-1 min-w-0">
-                        <div className="text-[13px] font-bold text-neutral-800 truncate">
-                          {s.en}
+                        <div className="text-[12px] font-bold text-neutral-800 truncate">
+                          {s.en} <span className=" text-[10px]">({s.ne})</span>
                         </div>
-                        <div className="text-[11px] font-medium text-neutral-400 truncate">
+                        {/* <div className="text-[11px] font-medium text-neutral-400 truncate">
                           {s.ne}
-                        </div>
+                        </div> */}
                       </div>
-                      <span className="text-xs font-extrabold text-neutral-900 whitespace-nowrap">
-                        {s.price}
-                      </span>
+
                       <button className="w-6 h-6 rounded-full hover:bg-red-50 text-neutral-300 hover:text-red-500 flex items-center justify-center transition shrink-0">
                         <X className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   ))}
                 </div>
-                <button className="mt-2 w-full h-9 rounded-xl border border-dashed border-neutral-200 text-xs font-bold text-neutral-500 hover:border-[#FF6B35] hover:text-[#FF6B35] transition flex items-center justify-center gap-1">
+                <button
+                  onClick={handleSubCategory}
+                  className=" cursor-pointer mt-2 w-full h-9 rounded-xl border border-dashed border-neutral-200 text-xs font-bold text-neutral-500 hover:border-[#FF6B35] hover:text-[#FF6B35] transition flex items-center justify-center gap-1"
+                >
                   <Plus className="w-3.5 h-3.5" /> Add Subcategory
                 </button>
               </div>
               <div className="mt-auto pt-3 border-t border-neutral-100 flex gap-2">
-                <button className="flex-1 h-10 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white text-[13px] font-bold flex items-center justify-center gap-1.5 transition">
+                <button
+                  onClick={handleAddCategory}
+                  className=" cursor-pointer flex-1 h-10 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white text-[13px] font-bold flex items-center justify-center gap-1.5 transition"
+                >
                   <Pencil className="w-3.5 h-3.5" /> Edit Settings
                 </button>
-                <button className="h-10 px-4 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 text-[13px] font-bold flex items-center gap-1.5 transition">
-                  <Trash2 className="w-3.5 h-3.5" /> Delete
+                <button
+                  onClick={() => toggleActive(c.slug)}
+                  aria-pressed={c.active}
+                  aria-label={`${c.active ? "Deactivate" : "Activate"} ${c.title}`}
+                  className={`h-10 px-4 rounded-xl text-[13px] font-bold flex items-center gap-1.5 transition shrink-0 ${
+                    c.active
+                      ? "bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-100"
+                      : "bg-neutral-100 hover:bg-neutral-200 text-neutral-600 border border-neutral-200"
+                  }`}
+                >
+                  <span
+                    className={`relative inline-block w-8 h-[18px] rounded-full transition ${c.active ? "bg-emerald-500" : "bg-neutral-300"}`}
+                  >
+                    <span
+                      className={`absolute top-[2px] w-[14px] h-[14px] rounded-full bg-white shadow transition-all ${
+                        c.active ? "left-[16px]" : "left-[2px]"
+                      }`}
+                    />
+                  </span>
+                  {c.active ? "Active" : "Inactive"}
                 </button>
               </div>
             </div>
@@ -308,7 +345,7 @@ const CategoryPage = () => {
         </div>
       )}
       <div className="px-1 text-[13px] font-medium text-neutral-400">
-        Showing {filtered.length} of {categories.length} categories
+        Showing {filtered.length} of {cats.length} categories
       </div>
     </div>
   );

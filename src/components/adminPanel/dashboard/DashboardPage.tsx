@@ -1,10 +1,10 @@
 import React from "react";
 import {
+  ArrowDownRight,
   ArrowRight,
   ArrowUpRight,
   BadgeCheck,
-  Banknote,
-  CalendarDays,
+  ClipboardList,
   Clock,
   MapPin,
   Navigation,
@@ -27,22 +27,38 @@ import {
   YAxis,
 } from "recharts";
 
-const kpis = [
+type KpiTrend = {
+  /** Short delta shown in the badge, e.g. "+18.2%". */
+  value: string;
+  direction: "up" | "down" | "flat";
+};
+
+const kpis: Array<{
+  label: string;
+  value: string;
+  sub: string;
+  icon: React.ElementType;
+  bg: string;
+  iconColor: string;
+  trend: KpiTrend;
+}> = [
   {
     label: "Today's Revenue",
     value: "Rs. 2,48,500",
     sub: "+18.2% vs yesterday",
-    icon: Banknote,
+    icon: Wallet,
     bg: "bg-orange-50",
     iconColor: "text-[#FF6B35]",
+    trend: { value: "+18.2%", direction: "up" },
   },
   {
     label: "Bookings Today",
     value: "642",
     sub: "+64 from yesterday",
-    icon: CalendarDays,
+    icon: ClipboardList,
     bg: "bg-emerald-50",
     iconColor: "text-emerald-600",
+    trend: { value: "+64", direction: "up" },
   },
   {
     label: "Active Providers",
@@ -51,6 +67,7 @@ const kpis = [
     icon: UserCheck,
     bg: "bg-blue-50",
     iconColor: "text-blue-600",
+    trend: { value: "96% online", direction: "flat" },
   },
   {
     label: "Total Customers",
@@ -59,6 +76,7 @@ const kpis = [
     icon: Users,
     bg: "bg-violet-50",
     iconColor: "text-violet-600",
+    trend: { value: "+312", direction: "up" },
   },
 ];
 
@@ -150,7 +168,6 @@ type RevenueTickProps = {
   maxValue: number;
 };
 
-/** X-axis label - the peak day is highlighted in the brand colour. */
 const RevenueTick = ({ x = 0, y = 0, payload, maxValue }: RevenueTickProps) => {
   if (!payload) return null;
   return (
@@ -282,13 +299,28 @@ const providers = [
 
 const DashboardPage = () => {
   const [range, setRange] = React.useState<RevenueRange>("Week");
+  const [checked, setChecked] = React.useState<string[]>([]);
   const series = revenueSeries[range];
   const maxBar = Math.max(...series.points.map((p) => p.value));
+
+  const allChecked =
+    bookings.length > 0 && bookings.every((b) => checked.includes(b.id));
+
+  const toggleAll = () =>
+    setChecked(allChecked ? [] : bookings.map((b) => b.id));
+
+  const toggleOne = (id: string) =>
+    setChecked((current) =>
+      current.includes(id)
+        ? current.filter((item) => item !== id)
+        : [...current, id],
+    );
+
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-3">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-semibold text-neutral-400">
+          {/* <div className="flex items-center gap-2 text-xs font-semibold text-neutral-400">
             <span>Admin</span>
             <span>/</span>
             <span className="text-neutral-700">Dashboard</span>
@@ -296,7 +328,7 @@ const DashboardPage = () => {
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
               Live - Nepal
             </span>
-          </div>
+          </div> */}
           <h1 className="text-2xl font-semibold tracking-tight text-neutral-900 mt-1">
             Namaste, Shubash
           </h1>
@@ -304,40 +336,48 @@ const DashboardPage = () => {
             Friday, Oct 2, 2026 - Kathmandu / Pokhara / Lalitpur operations.
           </p>
         </div>
-        <div className="flex items-center gap-2.5">
+        {/* <div className="flex items-center gap-2.5">
           <button className="h-10 px-4 rounded-full border border-neutral-200 bg-white text-sm font-semibold text-neutral-700 hover:bg-neutral-50 shadow-sm">
-            Export Report
+            Report
           </button>
           <button className="h-10 px-4 rounded-full bg-[#FF6B35] hover:bg-[#e85a28] text-white text-sm font-bold shadow-md shadow-orange-500/25 flex items-center gap-1.5">
-            <CalendarDays className="w-4 h-4" /> + New Booking
+            <CalendarDays className="w-4 h-4" /> + Booking
           </button>
-        </div>
+        </div> */}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         {kpis.map((k) => {
           const Icon = k.icon;
+          const TrendIcon =
+            k.trend.direction === "down"
+              ? ArrowDownRight
+              : k.trend.direction === "flat"
+                ? null
+                : ArrowUpRight;
           return (
             <div
               key={k.label}
-              className="bg-white border border-neutral-200/70 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow"
+              className="group relative bg-white border border-neutral-200/70 rounded-2xl p-3 cursor-pointer  shadow-sm hover:shadow-md hover:border-neutral-300 transition-all"
             >
-              <div className="flex items-start justify-between">
-                <div
-                  className={`w-11 h-11 rounded-xl ${k.bg} flex items-center justify-center`}
+              <div className="flex items-start justify-between gap-3">
+                <span
+                  className={`w-5 h-5 rounded-xl ${k.bg} flex items-center justify-center shrink-0 transition-transform group-hover:scale-105`}
                 >
                   <Icon className={`w-5 h-5 ${k.iconColor}`} />
-                </div>
-                <span className="flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full bg-emerald-50 text-emerald-700">
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                  {k.sub.split(" ")[0]}
+                </span>
+                <span
+                  className={`flex items-center gap-1 text-[11px] font-bold px-2 py-1 rounded-full border shrink-0 ${k.trend.direction === "down" ? "bg-red-50 text-red-600 border-red-100" : k.trend.direction === "flat" ? "bg-neutral-50 text-neutral-500 border-neutral-200" : "bg-emerald-50 text-emerald-700 border-emerald-100"}`}
+                >
+                  {TrendIcon && <TrendIcon className="w-3.5 h-3.5" />}
+                  {k.trend.value}
                 </span>
               </div>
-              <div className="mt-4 text-2xl font-semibold tracking-tight text-neutral-900">
+              <div className="mt-4 text-2xl font-bold tracking-tight text-neutral-900">
                 {k.value}
               </div>
-              <div className="text-[13px] font-medium text-neutral-500 mt-0.5">
-                {k.label} - {k.sub}
+              <div className="text-[11px] font-medium text-neutral-500 mt-0.5">
+                {k.label} · {k.sub}
               </div>
             </div>
           );
@@ -356,8 +396,13 @@ const DashboardPage = () => {
               </h3>
               <p className="text-[13px] text-neutral-500 mt-1">
                 Total{" "}
-                <span className="font-bold text-neutral-800">{series.total}</span>{" "}
-                - <span className="text-emerald-600 font-semibold">{series.growth}</span>{" "}
+                <span className="font-bold text-neutral-800">
+                  {series.total}
+                </span>{" "}
+                -{" "}
+                <span className="text-emerald-600 font-semibold">
+                  {series.growth}
+                </span>{" "}
                 {series.vs}
               </p>
             </div>
@@ -406,11 +451,7 @@ const DashboardPage = () => {
                   cursor={{ fill: "rgba(245,245,245,0.65)" }}
                   content={<RevenueTooltip />}
                 />
-                <Bar
-                  dataKey="value"
-                  maxBarSize={56}
-                  radius={[12, 12, 12, 12]}
-                >
+                <Bar dataKey="value" maxBarSize={56} radius={[12, 12, 12, 12]}>
                   {series.points.map((p) => (
                     <Cell
                       key={p.label}
@@ -426,7 +467,7 @@ const DashboardPage = () => {
                     fill="#737373"
                     fontSize={11}
                     fontWeight={700}
-                    formatter={(v) => `${v}k`}
+                    formatter={(v: any) => `${v}k`}
                   />
                 </Bar>
               </BarChart>
@@ -450,8 +491,8 @@ const DashboardPage = () => {
         </div>
 
         <div className="flex flex-col gap-4">
-          <div className="bg-neutral-900 text-white rounded-2xl p-5 shadow-md relative overflow-hidden">
-            <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-[#FF6B35]/20 blur-2xl" />
+          <div className="bg-neutral-500 text-white rounded-2xl p-5 shadow-md relative overflow-hidden">
+            <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-[#FF6B35]/70 blur-2xl" />
             <div className="flex items-center justify-between">
               <h3 className="font-bold flex items-center gap-2">
                 <Navigation className="w-4 h-4 text-[#FF6B35]" /> Live Tracking
@@ -534,7 +575,16 @@ const DashboardPage = () => {
             <table className="w-full text-sm min-w-[680px]">
               <thead>
                 <tr className="text-left text-[11px] uppercase tracking-wider text-neutral-400 border-y border-neutral-100 bg-neutral-50/60">
-                  <th className="px-5 py-3 font-bold">Booking</th>
+                  <th className="px-5 py-3 w-10">
+                    <input
+                      type="checkbox"
+                      checked={allChecked}
+                      onChange={toggleAll}
+                      aria-label="Select all bookings"
+                      className="w-4 h-4 accent-[#FF6B35] cursor-pointer"
+                    />
+                  </th>
+                  <th className="px-4 py-3 font-bold">Booking</th>
                   <th className="px-4 py-3 font-bold">Service / Area</th>
                   <th className="px-4 py-3 font-bold">Provider</th>
                   <th className="px-4 py-3 font-bold">Status</th>
@@ -542,44 +592,73 @@ const DashboardPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {bookings?.map((b) => (
-                  <tr
-                    key={b.id}
-                    className="border-b border-neutral-100 last:border-0 hover:bg-neutral-50/60 transition"
-                  >
-                    <td className="px-5 py-3.5">
-                      <div className="font-bold text-neutral-900">{b.id}</div>
-                      <div className="text-xs text-neutral-500 font-medium">
-                        {b.customer} - {b.time}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5">
-                      <div className="font-semibold text-neutral-800 flex items-center gap-1.5">
-                        <Wrench className="w-3.5 h-3.5 text-neutral-400" />{" "}
-                        {b.service}
-                      </div>
-                      <div className="text-xs text-neutral-500 flex items-center gap-1 mt-0.5">
-                        <MapPin className="w-3 h-3" /> {b.area}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5 text-[13px] font-semibold text-neutral-700">
-                      {b.provider}
-                    </td>
-                    <td className="px-4 py-3.5">
-                      <span
-                        className={`text-xs font-bold px-2.5 py-1 rounded-full border ${b.statusStyle}`}
-                      >
-                        {b.status}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3.5 text-right font-extrabold text-neutral-900 whitespace-nowrap">
-                      {b.amount}
-                    </td>
-                  </tr>
-                ))}
+                {bookings?.map((b) => {
+                  const isSelected = checked.includes(b.id);
+                  return (
+                    <tr
+                      key={b.id}
+                      className={`border-b border-neutral-100 last:border-0 transition ${isSelected ? "bg-orange-50/60" : "hover:bg-neutral-50/60"}`}
+                    >
+                      <td className="px-5 py-3.5">
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => toggleOne(b.id)}
+                          aria-label={`Select booking ${b.id}`}
+                          className="w-4 h-4 accent-[#FF6B35] cursor-pointer"
+                        />
+                      </td>
+                      <td className="px-4 py-3.5">
+                        <div className="font-bold text-neutral-900">{b.id}</div>
+                        <div className="text-xs text-neutral-500 font-medium">
+                          {b.customer} - {b.time}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3.5">
+                        <div className="font-semibold text-neutral-800 flex items-center gap-1.5">
+                          <Wrench className="w-3.5 h-3.5 text-neutral-400" />{" "}
+                          {b.service}
+                        </div>
+                        <div className="text-xs text-neutral-500 flex items-center gap-1 mt-0.5">
+                          <MapPin className="w-3 h-3" /> {b.area}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3.5 text-[13px] font-semibold text-neutral-700">
+                        {b.provider}
+                      </td>
+                      <td className="px-4 py-3.5">
+                        <span
+                          className={`text-xs font-bold px-2.5 py-1 rounded-full border ${b.statusStyle}`}
+                        >
+                          {b.status}
+                        </span>
+                      </td>
+                      <td className="px-5 py-3.5 text-right font-extrabold text-neutral-900 whitespace-nowrap">
+                        {b.amount}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
+          {checked.length > 0 && (
+            <div className="px-5 py-3 border-t border-neutral-100 flex items-center justify-between gap-3 bg-orange-50/40">
+              <span className="text-[12px] font-semibold text-neutral-600">
+                <span className="font-extrabold text-[#FF6B35]">
+                  {checked.length}
+                </span>{" "}
+                booking{checked.length > 1 ? "s" : ""} selected
+              </span>
+              <button
+                type="button"
+                onClick={() => setChecked([])}
+                className="text-[11px] font-bold text-[#FF6B35] hover:underline"
+              >
+                Clear selection
+              </button>
+            </div>
+          )}
         </div>
         <div className="flex flex-col gap-4">
           <div className="bg-white border border-neutral-200/70 rounded-2xl p-5 shadow-sm">

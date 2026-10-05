@@ -4,6 +4,7 @@ import { ChevronLeft } from "lucide-react";
 import { AdminNavList } from "@/utils/AdminNavList";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import Header from "./HeaderLayout";
+import { ModalProvider } from "@/providers/ModalProvider";
 
 const { Sider, Content } = Layout;
 
@@ -142,12 +143,12 @@ const AdminLayout = ({ children }: { children?: React.ReactNode }) => {
         <Content
           style={{
             margin: "10px 6px 6px",
-            padding: 24,
+            padding: 16,
             background: colorBgContainer,
             borderRadius: borderRadiusLG,
           }}
         >
-          {children || <Outlet />}
+          <ModalProvider>{children || <Outlet />}</ModalProvider>
         </Content>
       </Layout>
     </Layout>

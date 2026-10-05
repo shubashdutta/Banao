@@ -1,6 +1,19 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Layout } from "antd";
-import { Search, Command, Bell, ShieldCheck } from "lucide-react";
+import {
+  Search,
+  Command,
+  Bell,
+  ShieldCheck,
+  ChevronDown,
+  User,
+  Settings,
+  LogOut,
+  Download,
+  Plus,
+  ClipboardListIcon,
+} from "lucide-react";
+import { FormProvider } from "react-hook-form";
 
 const { Header: AntHeader } = Layout;
 
@@ -9,6 +22,26 @@ interface AdminHeaderProps {
 }
 
 const Header: React.FC<AdminHeaderProps> = ({ colorBgContainer }) => {
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target as Node)
+      ) {
+        setProfileOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <AntHeader
       style={{
@@ -50,7 +83,7 @@ const Header: React.FC<AdminHeaderProps> = ({ colorBgContainer }) => {
         <div className="h-6 w-[1px] bg-neutral-200"></div>
 
         <div className="flex items-center gap-3 cursor-pointer">
-          <div className="relative">
+          {/* <div className="relative">
             <img
               src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               alt="Binod Pokhrel"
@@ -68,6 +101,105 @@ const Header: React.FC<AdminHeaderProps> = ({ colorBgContainer }) => {
             <span className="text-xs text-neutral-400 font-medium">
               Super Admin
             </span>
+          </div> */}
+
+          <div className="relative">
+            {/* Profile Button */}
+            <button
+              type="button"
+              onClick={() => setProfileOpen((prev) => !prev)}
+              className="flex items-center gap-3 cursor-pointer"
+            >
+              <div className="relative" ref={profileRef}>
+                <img
+                  src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  alt="Binod Pokhrel"
+                  className="w-10 h-10 rounded-full object-cover border border-neutral-200 shadow-sm"
+                />
+
+                <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full" />
+              </div>
+            </button>
+
+            {profileOpen && (
+              <div className="absolute right-0 top-full z-50 mt-3 w-64 overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-xl">
+                <div className="border-b border-neutral-100 px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                      alt="Binod Pokhrel"
+                      className="h-10 w-10 rounded-full object-cover border border-neutral-200"
+                    />
+
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-bold text-neutral-900">
+                        Shubash Dutta
+                      </p>
+
+                      <p className="truncate text-xs text-neutral-400">
+                        shubash@example.com
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Menu */}
+                <div className="p-1.5">
+                  <button
+                    type="button"
+                    className=" hover:bg-[#ff6b00] cursor-pointer flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-neutral-700 transition  hover:text-white"
+                  >
+                    <Download className="h-4 w-4 text-neutral-400" /> Export
+                    Reports
+                  </button>
+
+                  {/* <div className=" border-b-2 border-b-gray-200 " /> */}
+
+                  <button
+                    type="button"
+                    className=" hover:bg-[#ff6b00] cursor-pointer flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-neutral-700 transition  hover:text-white"
+                  >
+                    <Plus className="h-4 w-4 text-neutral-400" /> New Booking
+                  </button>
+                  <button
+                    type="button"
+                    className=" hover:bg-[#ff6b00] cursor-pointer flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-neutral-700 transition  hover:text-white"
+                  >
+                    <ClipboardListIcon className="h-4 w-4 text-neutral-400" />{" "}
+                    Add Provider
+                  </button>
+                  <button
+                    type="button"
+                    className=" hover:bg-[#ff6b00] cursor-pointer flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-neutral-700 transition  hover:text-white"
+                  >
+                    <User className="h-4 w-4 text-neutral-400" />
+                    My Profile
+                  </button>
+
+                  <button
+                    type="button"
+                    className=" hover:bg-[#ff6b00] cursor-pointer flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-neutral-700 transition  hover:text-white"
+                  >
+                    <Settings className="h-4 w-4 text-neutral-400 !group-hover:text-white" />
+                    Settings
+                  </button>
+                </div>
+
+                {/* Logout */}
+                <div className="border-t border-neutral-100 p-1.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      // logout logic here
+                    }}
+                    className=" cursor-pointer flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-50"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Logout
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

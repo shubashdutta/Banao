@@ -44,7 +44,7 @@ export const AdminNavList = [
     label: "Providers",
     id: "providers",
     icon: UserCheck,
-    badge: "1 Pending",
+    badge: "4 Pending",
     link: "/provider",
   },
   {

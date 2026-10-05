@@ -122,8 +122,7 @@ const NotificationPage = () => {
             </span>
           </div>
           <p className="text-sm text-neutral-500 mt-1.5">
-            Manage multi-channel notification templates with English & Nepali
-            translation tags and dynamic payload variables.
+            Manage notification templates, translations & dynamic variables.
           </p>
         </div>
         <button className="h-10 px-4 rounded-full bg-[#FF6B35] hover:bg-[#e85a28] text-white text-sm font-bold shadow-md shadow-orange-500/25 flex items-center gap-1.5 transition shrink-0">
