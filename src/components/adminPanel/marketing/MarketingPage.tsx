@@ -76,14 +76,14 @@ const navTabs: NavTab[] = [
 
 const primaryMetrics: Metric[] = [
   {
-    label: "Total Subscribers",
+    label: "Subscribers",
     value: "38,560",
     hint: "+12.4% last mo",
     icon: Users,
     accent: "border-orange-100 bg-orange-50 text-[#FF6B35]",
   },
   {
-    label: "Active Subscribers",
+    label: "Subscribers",
     value: "35,475",
     hint: "93.5% delivery valid",
     icon: UserCheck,
@@ -507,41 +507,45 @@ const BulkNewsletterStudioPage = () => {
                     </span>
                   </div>
                   <p className="mt-1.5 max-w-2xl text-[13px] font-medium text-neutral-500">
-                    High-deliverability newsletter dispatch system for Nepal
-                    Customers, Service Providers &amp; Internal Staff.
+                    Reliable newsletter dispatch system for customers, providers
+                    & staff.
                   </p>
                 </div>
               </div>
-              <div className="flex flex-wrap items-center gap-2.5">
+              <div className="flex items-center gap-x-3">
+                {/* Secondary Button - whitespace-nowrap से टेक्स्ट टूटेगा नहीं */}
                 <button
                   type="button"
-                  className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-neutral-200 bg-white px-4 text-sm font-bold text-neutral-700 shadow-sm transition hover:border-neutral-300 hover:bg-neutral-50"
+                  className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-neutral-200 bg-white px-4 text-sm font-semibold text-neutral-700 shadow-sm transition-all duration-200 hover:border-neutral-300 hover:bg-neutral-50 active:scale-95 whitespace-nowrap"
                 >
-                  <Server className="h-4 w-4" />
-                  Flush SMTP Queue
+                  <Server className="h-4 w-4 text-neutral-500 shrink-0" />
+                  <span>Flush Queue</span>
                 </button>
+
+                {/* Primary Button */}
                 <button
                   type="button"
-                  className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#FF6B35] px-4 text-sm font-bold text-white shadow-sm shadow-orange-500/25 transition hover:bg-[#f45d26] active:scale-[0.98]"
+                  className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#FF6B35] px-4 text-sm font-semibold text-white shadow-md shadow-[#FF6B35]/25 transition-all duration-200 hover:bg-[#e85d28] active:scale-95 whitespace-nowrap"
                 >
-                  <Zap className="h-4 w-4" />+ New Campaign
+                  <Zap className="h-4 w-4 shrink-0" />
+                  <span>New Campaign</span>
                 </button>
               </div>
             </div>
           </section>
 
           {/* Primary metrics */}
-          <Reveal
+          {/* <Reveal
             className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6"
             threshold={0.05}
           >
             {primaryMetrics.map((metric, index) => (
               <MetricCard key={metric.label} metric={metric} index={index} />
             ))}
-          </Reveal>
+          </Reveal> */}
 
           {/* Performance metrics */}
-          <Reveal
+          {/* <Reveal
             className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6"
             threshold={0.05}
           >
@@ -552,7 +556,7 @@ const BulkNewsletterStudioPage = () => {
                 index={index + primaryMetrics.length}
               />
             ))}
-          </Reveal>
+          </Reveal> */}
 
           {/* Main analytics */}
           <Reveal className="grid grid-cols-1 gap-4 xl:grid-cols-[1.6fr_1fr]">

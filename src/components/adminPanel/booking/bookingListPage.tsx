@@ -7,6 +7,7 @@ import {
   Clock,
   Download,
   MapPin,
+  Navigation,
   Plus,
   Search,
   SlidersHorizontal,
@@ -14,6 +15,7 @@ import {
   Wrench,
   X,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 type BStatus = "On Going" | "Accepted" | "Pending" | "Completed" | "Rejected";
 type Booking = {
@@ -281,6 +283,8 @@ const BookingListPage = () => {
   const [city, setCity] = useState("All cities");
   const [checked, setChecked] = useState<string[]>([]);
   const [filterOpen, setFilterOpen] = useState(false);
+
+  const navigate = useNavigate();
   const counts = useMemo(
     () => ({
       All: bookings.length,
@@ -544,9 +548,9 @@ const BookingListPage = () => {
       )}
       <div className="bg-white border border-neutral-200/70 rounded-2xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm min-w-[1040px]">
+          <table className="w-full text-sm ">
             <thead>
-              <tr className="text-left text-[11px] uppercase tracking-wider text-neutral-400 border-b border-neutral-100 bg-neutral-50/60">
+              <tr className="text-left text-[11px] uppercase tracking-wider text-white border-b border-neutral-100 bg-[#FF6B35]">
                 <th className="px-5 py-3.5 w-10">
                   <input
                     type="checkbox"
@@ -582,7 +586,7 @@ const BookingListPage = () => {
                       />
                     </td>
                     <td className="px-4 py-3.5">
-                      <div className="font-bold text-neutral-900">{b.id}</div>
+                      <div className="   text-neutral-900">{b.id}</div>
                       <div className="text-xs text-neutral-500 font-medium flex items-center gap-1">
                         <User className="w-3 h-3" />
                         {b.customer}
@@ -593,20 +597,21 @@ const BookingListPage = () => {
                       </div>
                     </td>
                     <td className="px-4 py-3.5">
-                      <div className="font-semibold text-neutral-800 flex items-center gap-1.5 text-[13px]">
+                      <div className=" text-neutral-800 flex items-center gap-1.5 text-[13px]">
                         <Wrench className="w-3.5 h-3.5 text-neutral-400" />
                         {b.service}
                       </div>
                       <div className="text-xs text-neutral-500 flex items-center gap-1 mt-0.5">
-                        <MapPin className="w-3 h-3" />
+                        <Navigation className="w-3 h-3" />
                         {b.area}, {b.city}
                       </div>
                     </td>
                     <td className="px-4 py-3.5">
                       <span
-                        className={`text-[13px] font-semibold inline-flex items-center gap-1.5 ${b.provider === "Unassigned" ? "text-amber-600" : "text-neutral-700"}`}
+                        onClick={() => navigate("/live-tracking")}
+                        className={` cursor-pointer hover:text-orange-400 text-[13px]  inline-flex items-center gap-1.5 ${b.provider === "Unassigned" ? "text-amber-600" : "text-neutral-700"}`}
                       >
-                        <MapPin className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
+                        <Navigation className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
                         {b.provider}
                       </span>
                       {b.provider === "Unassigned" && (

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Ban, CalendarOff, Clock, Pencil, Plus, Trash2 } from "lucide-react";
+import { useModal } from "@/providers/ModalProvider";
+import TimeSlotFormPage from "./TimeSlotFormPage";
 
 type Slot = {
   title: string;
@@ -77,6 +79,11 @@ const blackouts: Blackout[] = [
 
 const TimeSlotPage = () => {
   const [tab, setTab] = useState<"slots" | "blackout">("slots");
+
+  const { openModal } = useModal();
+  const handleAddTimeSlot = () => {
+    openModal("Add Time Slots", <TimeSlotFormPage />, "medium");
+  };
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
@@ -94,7 +101,10 @@ const TimeSlotPage = () => {
             schedules.
           </p>
         </div>
-        <button className="h-10 px-4 rounded-full bg-[#FF6B35] hover:bg-[#e85a28] text-white text-sm font-bold shadow-md shadow-orange-500/25 flex items-center gap-1.5 transition shrink-0">
+        <button
+          onClick={handleAddTimeSlot}
+          className=" cursor-pointer h-10 px-4 rounded-full bg-[#FF6B35] hover:bg-[#e85a28] text-white text-sm font-bold shadow-md shadow-orange-500/25 flex items-center gap-1.5 transition shrink-0"
+        >
           <Plus className="w-4 h-4" /> Add Time Slot
         </button>
       </div>

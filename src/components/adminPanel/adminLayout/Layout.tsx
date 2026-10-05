@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Layout, Menu, theme } from "antd";
 import { ChevronLeft } from "lucide-react";
 import { AdminNavList } from "@/utils/AdminNavList";
@@ -17,6 +17,14 @@ const AdminLayout = ({ children }: { children?: React.ReactNode }) => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "instant",
+    });
+  }, [location.pathname]);
+
   const menuItems = AdminNavList?.map((item) => {
     const IconComponent = item.icon;
 
@@ -27,7 +35,7 @@ const AdminLayout = ({ children }: { children?: React.ReactNode }) => {
         <span
           className={
             isHighlighted
-              ? "bg-[#FF6B35] text-white text-sm py-0.5 font-semibold px-2 rounded-2xl shadow-sm"
+              ? "bg-[#FF6B35] text-white text-xs py-0.5 font-semibold px-2 rounded-2xl shadow-sm" // text-sm को text-xs कर दिया गया है
               : "bg-neutral-100 text-neutral-500 text-xs px-2 rounded-2xl font-semibold"
           }
         >
@@ -40,7 +48,7 @@ const AdminLayout = ({ children }: { children?: React.ReactNode }) => {
       key: item.link || `/${item.id}`,
       icon: <IconComponent className="w-5 h-5" />,
       label: item.badge ? (
-        <div className="flex items-center justify-between pr-2">
+        <div className="flex items-center justify-between pr-2 text-xs">
           <span>{item.label}</span>
           {badgeElement}
         </div>
@@ -49,6 +57,39 @@ const AdminLayout = ({ children }: { children?: React.ReactNode }) => {
       ),
     };
   });
+
+  // const menuItems = AdminNavList?.map((item) => {
+  //   const IconComponent = item.icon;
+
+  //   let badgeElement = null;
+  //   if (item.badge) {
+  //     const isHighlighted = item.id === "providers" || item.id === "booking";
+  //     badgeElement = (
+  //       <span
+  //         className={
+  //           isHighlighted
+  //             ? "bg-[#FF6B35] text-white text-sm py-0.5 font-semibold px-2 rounded-2xl shadow-sm"
+  //             : "bg-neutral-100 text-neutral-500 text-xs px-2 rounded-2xl font-semibold"
+  //         }
+  //       >
+  //         {item.badge}
+  //       </span>
+  //     );
+  //   }
+
+  //   return {
+  //     key: item.link || `/${item.id}`,
+  //     icon: <IconComponent className="w-5 h-5" />,
+  //     label: item.badge ? (
+  //       <div className="flex items-center justify-between pr-2 text-xs">
+  //         <span>{item.label}</span>
+  //         {badgeElement}
+  //       </div>
+  //     ) : (
+  //       item.label
+  //     ),
+  //   };
+  // });
 
   return (
     <Layout style={{ minHeight: "100vh" }} hasSider>
@@ -67,7 +108,6 @@ const AdminLayout = ({ children }: { children?: React.ReactNode }) => {
           flexShrink: 0,
         }}
       >
-        {/* Full-height flex column: logo (fixed) + menu (scroll) + footer (fixed) */}
         <div
           style={{
             display: "flex",

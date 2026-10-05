@@ -26,6 +26,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { dateUtils } from "@/utils/dateUtils";
 
 type KpiTrend = {
   /** Short delta shown in the badge, e.g. "+18.2%". */
@@ -333,7 +334,7 @@ const DashboardPage = () => {
             Namaste, Shubash
           </h1>
           <p className="text-sm text-neutral-500 mt-0.5">
-            Friday, Oct 2, 2026 - Kathmandu / Pokhara / Lalitpur operations.
+            {dateUtils} - Kathmandu / Pokhara / Lalitpur operations.
           </p>
         </div>
         {/* <div className="flex items-center gap-2.5">

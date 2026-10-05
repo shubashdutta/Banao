@@ -3,6 +3,7 @@ import {
   ArrowRight,
   ArrowUpDown,
   BadgeCheck,
+  BarChart3,
   CalendarDays,
   Check,
   ChevronDown,
@@ -382,9 +383,7 @@ const StatsView = ({ summary }: { summary: StatsSummary }) => {
           <h3 className="font-bold text-neutral-900">Status Breakdown</h3>
           <div className="mt-4 flex flex-col gap-3.5">
             {statusBreakdown.map((row) => {
-              const pct = total
-                ? Math.round((row.count / total) * 100)
-                : 0;
+              const pct = total ? Math.round((row.count / total) * 100) : 0;
               return (
                 <div key={row.label}>
                   <div className="flex items-center justify-between text-[13px] mb-1.5">
@@ -623,7 +622,6 @@ const CustomerPage = () => {
   const tabs: Array<{ id: CustomerTab; label: string; count: number }> = [
     { id: "all", label: "All Customers", count: tabCounts.all },
     { id: "active", label: "Active", count: tabCounts.active },
-    { id: "stats", label: "Stats", count: tabCounts.all },
   ];
 
   const statsSummary = useMemo(() => {
@@ -769,6 +767,17 @@ const CustomerPage = () => {
           )}
           <button
             type="button"
+            onClick={() =>
+              setActiveTab(activeTab === "stats" ? "all" : "stats")
+            }
+            aria-pressed={activeTab === "stats"}
+            className={`h-10 px-4 rounded-full border text-[13px] font-bold flex items-center gap-1.5 transition whitespace-nowrap ${activeTab === "stats" ? "border-orange-100 bg-orange-50 text-[#FF6B35]" : "border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50"}`}
+          >
+            <BarChart3 className="w-4 h-4" />
+            Stats
+          </button>
+          <button
+            type="button"
             onClick={() => setFilterOpen((open) => !open)}
             aria-expanded={filterOpen}
             className={`h-10 px-4 rounded-full border text-[13px] font-bold flex items-center gap-1.5 transition whitespace-nowrap ${filterOpen || hasActiveFilter ? "border-orange-100 bg-orange-50 text-[#FF6B35]" : "border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50"}`}
@@ -840,163 +849,165 @@ const CustomerPage = () => {
       {activeTab === "stats" ? (
         <StatsView summary={statsSummary} />
       ) : (
-      <div className="bg-white border border-neutral-200/70 rounded-2xl shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm min-w-[820px]">
-            <thead>
-              <tr className="text-left text-[11px] uppercase tracking-wider text-neutral-400 border-b border-neutral-100 bg-neutral-50/60">
-                <th className="px-5 py-3.5 w-10">
-                  <input
-                    type="checkbox"
-                    checked={allChecked}
-                    onChange={toggleAll}
-                    aria-label="Select all customers"
-                    className="w-4 h-4 accent-[#FF6B35] cursor-pointer"
-                  />
-                </th>
-                <th className="px-4 py-3.5 font-bold">Customer</th>
-                <th className="px-4 py-3.5 font-bold">Contact / Area</th>
-                <th className="px-4 py-3.5 font-bold text-center">Bookings</th>
-                <th className="px-4 py-3.5 font-bold text-center">Rating</th>
-                <th className="px-4 py-3.5 font-bold">Status</th>
-                <th className="px-5 py-3.5 font-bold text-right">
-                  Total Spent
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {visible.map((c) => {
-                const isSelected = checked.includes(c.id);
-                return (
-                  <tr
-                    key={c.id}
-                    className={`border-b border-neutral-100 last:border-0 transition cursor-pointer ${isSelected ? "bg-orange-50/60" : "hover:bg-neutral-50/70"}`}
-                  >
-                    <td className="px-5 py-3.5">
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        onChange={() => toggleOne(c.id)}
-                        aria-label={`Select customer ${c.name}`}
-                        className="w-4 h-4 accent-[#FF6B35] cursor-pointer"
-                      />
-                    </td>
-                    <td className="px-4 py-3.5">
-                      <div className="flex items-center gap-3">
-                        <img
-                          src={c.img}
-                          alt={c.name}
-                          className="w-10 h-10 rounded-full object-cover border border-neutral-200 shrink-0"
+        <div className="bg-white border border-neutral-200/70 rounded-2xl shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm ">
+              <thead>
+                <tr className="text-left text-[11px] uppercase tracking-wider text-white border-b border-neutral-100 bg-[#FF6B35]">
+                  <th className="px-5 py-3.5 w-10">
+                    <input
+                      type="checkbox"
+                      checked={allChecked}
+                      onChange={toggleAll}
+                      aria-label="Select all customers"
+                      className="w-4 h-4 accent-[#FF6B35] cursor-pointer"
+                    />
+                  </th>
+                  <th className="px-4 py-3.5 font-bold">Customer</th>
+                  <th className="px-4 py-3.5 font-bold">Contact / Area</th>
+                  <th className="px-4 py-3.5 font-bold text-center">
+                    Bookings
+                  </th>
+                  <th className="px-4 py-3.5 font-bold text-center">Rating</th>
+                  <th className="px-4 py-3.5 font-bold">Status</th>
+                  <th className="px-5 py-3.5 font-bold text-right">
+                    Total Spent
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {visible.map((c) => {
+                  const isSelected = checked.includes(c.id);
+                  return (
+                    <tr
+                      key={c.id}
+                      className={`border-b border-neutral-100 last:border-0 transition cursor-pointer ${isSelected ? "bg-orange-50/60" : "hover:bg-neutral-50/70"}`}
+                    >
+                      <td className="px-5 py-3.5">
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => toggleOne(c.id)}
+                          aria-label={`Select customer ${c.name}`}
+                          className="w-4 h-4 accent-[#FF6B35] cursor-pointer"
                         />
-                        <div className="min-w-0">
-                          <div className="font-bold text-neutral-900 flex items-center gap-1 truncate">
-                            {c.name}
-                            {c.tier === "VIP" && (
-                              <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-orange-50 text-[#FF6B35] border border-orange-100 shrink-0">
-                                VIP
-                              </span>
-                            )}
-                            {c.rating >= 4.8 && (
-                              <BadgeCheck className="w-3.5 h-3.5 text-blue-500 shrink-0" />
-                            )}
-                          </div>
-                          <div className="text-xs text-neutral-500 font-medium">
-                            {c.id} - Joined {c.joined}
+                      </td>
+                      <td className="px-4 py-3.5">
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={c.img}
+                            alt={c.name}
+                            className="w-10 h-10 rounded-full object-cover border border-neutral-200 shrink-0"
+                          />
+                          <div className="min-w-0">
+                            <div className="font-bold text-neutral-900 flex items-center gap-1 truncate">
+                              {c.name}
+                              {c.tier === "VIP" && (
+                                <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-orange-50 text-[#FF6B35] border border-orange-100 shrink-0">
+                                  VIP
+                                </span>
+                              )}
+                              {c.rating >= 4.8 && (
+                                <BadgeCheck className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+                              )}
+                            </div>
+                            <div className="text-xs text-neutral-500 font-medium">
+                              {c.id} - Joined {c.joined}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5">
-                      <div className="font-semibold text-neutral-800 flex items-center gap-1.5 text-[13px]">
-                        <Phone className="w-3.5 h-3.5 text-neutral-400" />
-                        {c.phone}
-                      </div>
-                      <div className="text-xs text-neutral-500 flex items-center gap-1 mt-0.5">
-                        <MapPin className="w-3 h-3" />
-                        {c.area}, {c.city}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5 text-center">
-                      <div className="font-extrabold text-neutral-900">
-                        {c.bookings}
-                      </div>
-                      <div className="text-[11px] text-neutral-500 font-medium flex items-center justify-center gap-1">
-                        <CalendarDays className="w-3 h-3" />
-                        {c.lastBooking}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5 text-center">
-                      <span className="inline-flex items-center gap-1 text-xs font-extrabold bg-amber-50 border border-amber-100 text-neutral-800 px-2 py-1 rounded-full">
-                        <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                        {c.rating.toFixed(1)}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3.5">
-                      <span
-                        className={`text-xs font-bold px-2.5 py-1 rounded-full border ${statusStyle[c.status]}`}
-                      >
-                        {c.status}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3.5 text-right">
-                      <div className="font-extrabold text-neutral-900 whitespace-nowrap">
-                        {c.spent}
-                      </div>
-                      <button className="text-xs font-bold text-[#FF6B35] hover:underline inline-flex items-center gap-0.5">
-                        View <ArrowRight className="w-3 h-3" />
-                      </button>
+                      </td>
+                      <td className="px-4 py-3.5">
+                        <div className="font-semibold text-neutral-800 flex items-center gap-1.5 text-[13px]">
+                          <Phone className="w-3.5 h-3.5 text-neutral-400" />
+                          {c.phone}
+                        </div>
+                        <div className="text-xs text-neutral-500 flex items-center gap-1 mt-0.5">
+                          <MapPin className="w-3 h-3" />
+                          {c.area}, {c.city}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3.5 text-center">
+                        <div className="font-extrabold text-neutral-900">
+                          {c.bookings}
+                        </div>
+                        <div className="text-[11px] text-neutral-500 font-medium flex items-center justify-center gap-1">
+                          <CalendarDays className="w-3 h-3" />
+                          {c.lastBooking}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3.5 text-center">
+                        <span className="inline-flex items-center gap-1 text-xs font-extrabold bg-amber-50 border border-amber-100 text-neutral-800 px-2 py-1 rounded-full">
+                          <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                          {c.rating.toFixed(1)}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3.5">
+                        <span
+                          className={`text-xs font-bold px-2.5 py-1 rounded-full border ${statusStyle[c.status]}`}
+                        >
+                          {c.status}
+                        </span>
+                      </td>
+                      <td className="px-5 py-3.5 text-right">
+                        <div className="font-extrabold text-neutral-900 whitespace-nowrap">
+                          {c.spent}
+                        </div>
+                        <button className="text-xs font-bold text-[#FF6B35] hover:underline inline-flex items-center gap-0.5">
+                          View <ArrowRight className="w-3 h-3" />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+                {visible.length === 0 && (
+                  <tr>
+                    <td
+                      colSpan={7}
+                      className="px-5 py-12 text-center text-sm font-medium text-neutral-400"
+                    >
+                      No customers found. Try another search.
                     </td>
                   </tr>
-                );
-              })}
-              {visible.length === 0 && (
-                <tr>
-                  <td
-                    colSpan={7}
-                    className="px-5 py-12 text-center text-sm font-medium text-neutral-400"
-                  >
-                    No customers found. Try another search.
-                  </td>
-                </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+          <div className="px-5 py-3.5 border-t border-neutral-100 flex items-center justify-between gap-3 text-[13px] font-medium text-neutral-500">
+            <span>
+              Showing {visible.length} of 48,214 customers
+              {checked.length > 0 && (
+                <>
+                  {" - "}
+                  <span className="font-extrabold text-[#FF6B35]">
+                    {checked.length} selected
+                  </span>
+                </>
               )}
-            </tbody>
-          </table>
-        </div>
-        <div className="px-5 py-3.5 border-t border-neutral-100 flex items-center justify-between gap-3 text-[13px] font-medium text-neutral-500">
-          <span>
-            Showing {visible.length} of 48,214 customers
-            {checked.length > 0 && (
-              <>
-                {" - "}
-                <span className="font-extrabold text-[#FF6B35]">
-                  {checked.length} selected
-                </span>
-              </>
-            )}
-          </span>
-          <div className="flex items-center gap-2">
-            {checked.length > 0 && (
-              <button
-                type="button"
-                onClick={() => setChecked([])}
-                className="text-[11px] font-bold text-[#FF6B35] hover:underline"
-              >
-                Clear selection
-              </button>
-            )}
-            <div className="flex gap-1.5">
-              {["1", "2", "3", "...", "4822"].map((p, i) => (
+            </span>
+            <div className="flex items-center gap-2">
+              {checked.length > 0 && (
                 <button
-                  key={p}
-                  className={`w-8 h-8 rounded-full text-xs font-bold border transition ${i === 0 ? "bg-neutral-900 text-white border-neutral-900" : "bg-white border-neutral-200 hover:bg-neutral-50"}`}
+                  type="button"
+                  onClick={() => setChecked([])}
+                  className="text-[11px] font-bold text-[#FF6B35] hover:underline"
                 >
-                  {p}
+                  Clear selection
                 </button>
-              ))}
+              )}
+              <div className="flex gap-1.5">
+                {["1", "2", "3", "...", "4822"].map((p, i) => (
+                  <button
+                    key={p}
+                    className={`w-8 h-8 rounded-full text-xs font-bold border transition ${i === 0 ? "bg-neutral-900 text-white border-neutral-900" : "bg-white border-neutral-200 hover:bg-neutral-50"}`}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
       )}
     </div>
   );

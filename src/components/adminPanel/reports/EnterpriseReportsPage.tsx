@@ -439,13 +439,10 @@ const EnterpriseReportsPage = () => {
   return (
     <main className="min-h-screen   ">
       <div className="mx-auto max-w-[1440px]">
-        {/* =========================================
-            HEADER
-        ========================================== */}
         <header className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-[27px] font-semibold leading-tight tracking-[-0.025em] text-neutral-900 sm:text-[30px]">
+              <h1 className="text-xl leading-tight tracking-[-0.025em] text-neutral-900 sm:text-[30px]">
                 Enterprise Financial & Operational Reports
               </h1>
 
@@ -455,8 +452,8 @@ const EnterpriseReportsPage = () => {
             </div>
 
             <p className="mt-2 max-w-3xl text-[16px] leading-7 text-neutral-500 sm:text-[17px]">
-              Generate, inspect, print, and export official PDF/CSV financial
-              statements and district GIS analytics.
+              Generate, inspect, print & export PDF/CSV financial and GIS
+              reports.
             </p>
           </div>
 
@@ -497,22 +494,22 @@ const EnterpriseReportsPage = () => {
         {/* =========================================
             SUMMARY STATS
         ========================================== */}
-        <section className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {/* <section className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {stats.map((stat) => {
             const Icon = stat.icon;
 
             return (
               <div
                 key={stat.label}
-                className="rounded-2xl border border-neutral-200/70 bg-white p-5 shadow-sm transition hover:shadow-md"
+                className="rounded-2xl border border-neutral-200/70 bg-white p-3 shadow-sm transition hover:shadow-md"
               >
-                <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start justify-between gap-2">
                   <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-400">
                     {stat.label}
                   </p>
 
                   <span
-                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border ${stat.accent}`}
+                    className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-xl border ${stat.accent}`}
                   >
                     <Icon className="h-4 w-4" />
                   </span>
@@ -528,7 +525,7 @@ const EnterpriseReportsPage = () => {
               </div>
             );
           })}
-        </section>
+        </section> */}
 
         {/* =========================================
             FILTER PANEL
@@ -536,26 +533,6 @@ const EnterpriseReportsPage = () => {
         <section className="mt-6 rounded-2xl border border-neutral-200/70 bg-white p-5 shadow-sm">
           {/* Panel header */}
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-orange-100 bg-orange-50">
-                <SlidersHorizontal className="h-4 w-4 text-[#FF6B35]" />
-              </span>
-
-              <div>
-                <h2 className="text-sm font-bold text-neutral-900">Filters</h2>
-
-                <p className="text-xs font-medium text-neutral-500">
-                  {activeFilterCount > 0
-                    ? `${activeFilterCount} active ${
-                        activeFilterCount === 1 ? "filter" : "filters"
-                      }`
-                    : "Refine reports by category, status, city and date"}{" "}
-                  • {filteredReports.length}{" "}
-                  {filteredReports.length === 1 ? "result" : "results"}
-                </p>
-              </div>
-            </div>
-
             {activeFilterCount > 0 && (
               <button
                 type="button"

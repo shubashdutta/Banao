@@ -35,7 +35,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen w-full flex bg-[#141414] text-white selection:bg-[#FF6B35] selection:text-white">
-      <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-12 bg-gradient-to-br from-neutral-900 via-neutral-950 to-black border-r border-neutral-800/60 overflow-hidden">
+      <div className=" animate__animated animate__fadeInLeft hidden lg:flex lg:w-1/2 relative flex-col justify-between p-12 bg-gradient-to-br from-neutral-900 via-neutral-950 to-black border-r border-neutral-800/60 overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#FF6B35_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
 
         <div className="relative z-10 flex items-center">
@@ -85,7 +85,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 bg-[#141414]">
+      <div className="animate__animated animate__fadeInRight w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 bg-[#141414]">
         <div className="w-full max-w-md space-y-8">
           <div className="lg:hidden flex items-center justify-between mb-2">
             <Link

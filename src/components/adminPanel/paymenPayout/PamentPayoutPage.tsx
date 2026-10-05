@@ -431,7 +431,7 @@ const PamentPayoutPage = () => {
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`h-10 px-4 rounded-full text-[13px] font-bold border transition ${filter === f ? "bg-[#FF6B35] text-white border-[#FF6B35] shadow-md shadow-orange-500/25" : "bg-white text-neutral-500 border-neutral-200 hover:bg-neutral-50"}`}
+              className={` cursor-pointer h-10 px-4 rounded-full text-[13px] font-bold border transition ${filter === f ? "bg-[#FF6B35] text-white border-[#FF6B35] shadow-md shadow-orange-500/25" : "bg-white text-neutral-500 border-neutral-200 hover:bg-neutral-50"}`}
             >
               {f}
             </button>
@@ -441,11 +441,11 @@ const PamentPayoutPage = () => {
             type="button"
             onClick={() => setFilter(showStats ? "All" : "stats")}
             aria-pressed={showStats}
-            className={`h-10 px-4 rounded-full text-[13px] font-bold border transition flex items-center gap-1.5 whitespace-nowrap ${showStats ? "bg-[#FF6B35] text-white border-[#FF6B35] shadow-md shadow-orange-500/25" : "border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50 shadow-sm"}`}
+            className={` cursor-pointer h-10 px-4 rounded-full text-[13px] font-bold border transition flex items-center gap-1.5 whitespace-nowrap ${showStats ? "bg-[#FF6B35] text-white border-[#FF6B35] shadow-md shadow-orange-500/25" : "border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50 shadow-sm"}`}
           >
             <FileBarChart2Icon className="w-4 h-4" /> stats
           </button>
-          <button className="h-10 px-4 rounded-full border border-neutral-200 bg-white text-[13px] font-bold text-neutral-700 hover:bg-neutral-50 shadow-sm flex items-center gap-1.5 transition whitespace-nowrap">
+          <button className=" cursor-pointer h-10 px-4 rounded-full border border-neutral-200 bg-white text-[13px] font-bold text-neutral-700 hover:bg-neutral-50 shadow-sm flex items-center gap-1.5 transition whitespace-nowrap">
             <Download className="w-4 h-4" /> Export
           </button>
         </div>
@@ -484,7 +484,7 @@ const PamentPayoutPage = () => {
         </div>
       ) : (
         <div className="bg-white border border-neutral-200/70 rounded-2xl shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto no-scrollbar">
             <table className="w-full text-sm ">
               <thead className="w-full">
                 <tr className="text-left text-xs font-bold uppercase tracking-wider text-white bg-[#FF6B35]">

@@ -258,7 +258,6 @@ const ProviderPage = () => {
     setCity("All cities");
   };
 
-  // Close the filter dropdown on outside click or Escape.
   const filterRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!filterOpen) return;
@@ -334,58 +333,9 @@ const ProviderPage = () => {
 
   return (
     <div className="flex flex-col gap-5">
-      {/* <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 text-xs font-semibold text-neutral-400">
-            <span>Admin</span>
-            <span>/</span>
-            <span className="text-neutral-700">Providers</span>
-            <span className="ml-2 px-2 py-0.5 rounded-full bg-[#FF6B35] text-white">
-              1 Pending
-            </span>
-          </div>
-          <h1 className="text-2xl font-semibold tracking-tight text-neutral-900 mt-1">
-            Providers
-          </h1>
-          <p className="text-sm text-neutral-500 mt-0.5">
-            Verify, manage and track all Banao pros - {filtered.length} showing.
-          </p>
-        </div>
-        <div className="flex items-center gap-2.5">
-          <button className="h-10 px-4 rounded-full border border-neutral-200 bg-white text-sm font-semibold text-neutral-700 hover:bg-neutral-50 shadow-sm flex items-center gap-1.5">
-            <Download className="w-4 h-4" /> Export
-          </button>
-          <button className="h-10 px-4 rounded-full bg-[#FF6B35] hover:bg-[#e85a28] text-white text-sm font-bold shadow-md shadow-orange-500/25 flex items-center gap-1.5">
-            <Plus className="w-4 h-4" /> Add Provider
-          </button>
-        </div>
-      </div> */}
-      {/* <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
-        {[
-          ["Total Providers", "1,342", "across 3 cities"],
-          ["Verified", String(counts.Verified * 256), "96% approval"],
-          ["Pending Review", String(counts.Pending * 3), "needs action"],
-          ["Avg. Rating", "4.8", "from 28k reviews"],
-        ].map(([l, v, s]) => (
-          <div
-            key={l}
-            className="bg-white border border-neutral-200/70 rounded-2xl px-5 py-4 shadow-sm"
-          >
-            <div className="text-[11px] font-bold uppercase tracking-wider text-neutral-400">
-              {l}
-            </div>
-            <div className="text-xl font-semibold text-neutral-900 mt-1">
-              {v}
-            </div>
-            <div className="text-xs font-medium text-neutral-500 mt-0.5">
-              {s}
-            </div>
-          </div>
-        ))}
-      </div> */}
       <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-3">
         <div className="bg-white border border-neutral-200/70 rounded-2xl p-2 shadow-sm flex gap-1.5 overflow-x-auto no-scrollbar">
-          {tabs.map((t) => (
+          {tabs?.map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
@@ -511,9 +461,9 @@ const ProviderPage = () => {
       )}
       <div className="bg-white border border-neutral-200/70 rounded-2xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm min-w-[900px]">
+          <table className="w-full text-sm ">
             <thead>
-              <tr className="text-left text-[11px] uppercase tracking-wider text-neutral-400 border-b border-neutral-100 bg-neutral-50/60">
+              <tr className="text-left text-[11px] uppercase tracking-wider text-white border-b border-neutral-100 bg-[#FF6B35]">
                 <th className="px-5 py-3.5 w-10">
                   <input
                     type="checkbox"
@@ -556,7 +506,7 @@ const ProviderPage = () => {
                           className="w-10 h-10 rounded-full object-cover border border-neutral-200 shrink-0"
                         />
                         <div className="min-w-0">
-                          <div className="font-bold text-neutral-900 flex items-center gap-1 truncate">
+                          <div className=" text-neutral-900 flex items-center gap-1 truncate">
                             {p.name}
                             {p.status === "Verified" && (
                               <BadgeCheck className="w-3.5 h-3.5 text-blue-500 shrink-0" />

@@ -76,7 +76,7 @@ export const AdminNavList = [
   {
     label: "Pricing Config",
     id: "pricingConfig",
-    link: "/commission",
+    link: "/pricing",
     icon: Tag,
   },
 
@@ -108,7 +108,7 @@ export const AdminNavList = [
     label: "Commission",
     id: "commission",
     icon: Percent,
-    link: "/pricing",
+    link: "/commission",
   },
   {
     label: "AI Analytics",

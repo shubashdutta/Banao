@@ -1,3 +1,191 @@
+// /* eslint-disable @typescript-eslint/no-explicit-any */
+// import React, { useState, type FC } from "react";
+
+// interface InputType {
+//   register: any;
+//   label: string;
+//   errors: any;
+//   type: string;
+//   required?: boolean;
+//   name: string;
+//   disabled?: boolean;
+//   validation?: any;
+//   value?: string;
+//   defaultValue?: string | boolean;
+//   clearErrors?: (name?: any) => void;
+//   onclick?: () => void;
+//   max?: number;
+//   min?: number;
+//   step?: string | number;
+// }
+
+// const TextInput: FC<InputType> = ({
+//   register,
+//   label,
+//   errors,
+//   type,
+//   name,
+//   required = false,
+//   disabled = false,
+//   value,
+//   defaultValue,
+//   clearErrors,
+//   onclick,
+//   validation,
+//   max,
+//   min,
+//   step,
+// }) => {
+//   const [isFocused, setIsFocused] = useState(false);
+//   const [hasValue, setHasValue] = useState(false);
+
+//   const { ref, onChange, onBlur, name: regName } = register(name, validation);
+
+//   const endOfYear = new Date(new Date().getFullYear(), 11, 31)
+//     .toISOString()
+//     .split("T")[0];
+
+//   const dateProps =
+//     type === "date" || type === "Date"
+//       ? name === "dateOfBirth"
+//         ? { max: endOfYear }
+//         : {}
+//       : {};
+
+//   return (
+//     <div className="flex flex-col w-full space-y-1">
+//       {type === "checkbox" ? (
+//         <label className="flex items-center gap-3 cursor-pointer text-sm text-neutral-300 select-none py-1">
+//           <input
+//             type="checkbox"
+//             name={regName ?? name}
+//             ref={ref}
+//             onChange={onChange}
+//             onBlur={onBlur}
+//             id={name}
+//             defaultChecked={Boolean(defaultValue)}
+//             onClick={onclick}
+//             className="w-4 h-4 rounded  border-neutral-800 text-[#FF6B35] focus:ring-[#FF6B35] focus:ring-offset-neutral-900 cursor-pointer"
+//           />
+//           <span>
+//             {label} {required && <span className="text-[#FF6B35]">*</span>}
+//           </span>
+//         </label>
+//       ) : (
+//         <div className="relative w-full pt-2">
+//           {/* Input Field */}
+
+//           <input
+//             type={type === "Date" ? "date" : type === "Time" ? "time" : type}
+//             placeholder=""
+//             // ... बाकी props वैसे ही रखें ...
+//             className={`peer w-full px-4 py-3 rounded-xl bg-white border text-neutral-900 text-sm focus:outline-none transition-all ${
+//               errors?.[name]
+//                 ? "border-red-500 focus:ring-1 focus:ring-red-500"
+//                 : "border-neutral-200 focus:border-[#FF6B35]"
+//             }`}
+//           />
+
+//           {/* Outlined Notch Label */}
+//           <label
+//             htmlFor={name}
+//             className={`absolute left-3 px-1.5 bg-white text-xs font-medium transition-all duration-200 pointer-events-none rounded
+//     ${
+//       isFocused ||
+//       hasValue ||
+//       Boolean(value) ||
+//       type === "date" ||
+//       type === "Date" ||
+//       type === "time" ||
+//       type === "Time"
+//         ? "-top-1 text-xs text-[#FF6B35]"
+//         : "top-6 text-sm text-neutral-400 peer-focus:-top-1 peer-focus:text-xs peer-focus:text-[#FF6B35]"
+//     }`}
+//           >
+//             {label} {required && <span className="text-[#FF6B35]">*</span>}
+//           </label>
+//           {/* <input
+//             type={type === "Date" ? "date" : type === "Time" ? "time" : type}
+//             placeholder=""
+//             autoComplete={
+//               type === "email"
+//                 ? "email"
+//                 : type === "time" ||
+//                     type === "Time" ||
+//                     type === "date" ||
+//                     type === "Date"
+//                   ? "off"
+//                   : "new-password"
+//             }
+//             {...(type === "number" ? { min: min ?? 0, max } : {})}
+//             step={
+//               type === "time" || type === "Time"
+//                 ? "60"
+//                 : type === "number"
+//                   ? step || "any"
+//                   : undefined
+//             }
+//             id={name}
+//             name={regName ?? name}
+//             {...dateProps}
+//             disabled={disabled}
+//             defaultValue={
+//               typeof defaultValue === "string" ? defaultValue : undefined
+//             }
+//             ref={ref}
+//             onFocus={() => {
+//               setIsFocused(true);
+//             }}
+//             onBlur={(e) => {
+//               setIsFocused(false);
+//               setHasValue(Boolean(e.target.value));
+//               onBlur(e);
+//             }}
+//             onChange={(e) => {
+//               setHasValue(Boolean(e.target.value));
+//               onChange(e); // natively updates React Hook Form's state
+//               if (e.target.value && errors?.[name]) {
+//                 clearErrors?.(name);
+//               }
+//             }}
+//             className={`peer w-full px-4 py-3 rounded-xl bg-neutral-900 border text-white text-sm focus:outline-none transition-all ${
+//               errors?.[name]
+//                 ? "border-red-500 focus:ring-1 focus:ring-red-500"
+//                 : "border-neutral-800 focus:border-[#FF6B35]"
+//             }`}
+//           />
+
+//           <label
+//             htmlFor={name}
+//             className={`absolute left-3 px-1.5 bg-neutral-900 text-xs font-medium transition-all duration-200 pointer-events-none rounded
+//               ${
+//                 isFocused ||
+//                 hasValue ||
+//                 Boolean(value) ||
+//                 type === "date" ||
+//                 type === "Date" ||
+//                 type === "time" ||
+//                 type === "Time"
+//                   ? "-top-1 text-xs text-[#FF6B35]"
+//                   : "top-6 text-sm text-neutral-500 peer-focus:-top-1 peer-focus:text-xs peer-focus:text-[#FF6B35]"
+//               }`}
+//           >
+//             {label} {required && <span className="text-[#FF6B35]">*</span>}
+//           </label> */}
+//         </div>
+//       )}
+
+//       {errors?.[name] && (
+//         <span className="text-red-500 text-xs mt-1 block pl-1">
+//           {errors[name]?.message}
+//         </span>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default TextInput;
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, type FC } from "react";
 
@@ -11,7 +199,7 @@ interface InputType {
   disabled?: boolean;
   validation?: any;
   value?: string;
-  defaultValue?: string | boolean;
+  defaultValue?: string | boolean | number;
   clearErrors?: (name?: any) => void;
   onclick?: () => void;
   max?: number;
@@ -46,15 +234,26 @@ const TextInput: FC<InputType> = ({
     .split("T")[0];
 
   const dateProps =
-    type === "date" || type === "Date"
+    type === "date" || type === "Date" || type === "datetime-local"
       ? name === "dateOfBirth"
         ? { max: endOfYear }
         : {}
       : {};
 
+  // Check if type should use standard top label instead of floating label
+  const isStandardLabel =
+    type === "number" ||
+    type === "date" ||
+    type === "Date" ||
+    type === "time" ||
+    type === "Time" ||
+    type === "datetime-local" ||
+    type === "Datetime";
+
   return (
     <div className="flex flex-col w-full space-y-1">
       {type === "checkbox" ? (
+        /* --- CHECKBOX --- */
         <label className="flex items-center gap-3 cursor-pointer text-sm text-neutral-300 select-none py-1">
           <input
             type="checkbox"
@@ -65,77 +264,77 @@ const TextInput: FC<InputType> = ({
             id={name}
             defaultChecked={Boolean(defaultValue)}
             onClick={onclick}
-            className="w-4 h-4 rounded  border-neutral-800 text-[#FF6B35] focus:ring-[#FF6B35] focus:ring-offset-neutral-900 cursor-pointer"
+            className="w-4 h-4 rounded border-neutral-800 text-[#FF6B35] focus:ring-[#FF6B35] focus:ring-offset-neutral-900 cursor-pointer"
           />
           <span>
             {label} {required && <span className="text-[#FF6B35]">*</span>}
           </span>
         </label>
-      ) : (
-        <div className="relative w-full pt-2">
-          {/* Input Field */}
-
-          <input
-            type={type === "Date" ? "date" : type === "Time" ? "time" : type}
-            placeholder=""
-            // ... बाकी props वैसे ही रखें ...
-            className={`peer w-full px-4 py-3 rounded-xl bg-white border text-neutral-900 text-sm focus:outline-none transition-all ${
-              errors?.[name]
-                ? "border-red-500 focus:ring-1 focus:ring-red-500"
-                : "border-neutral-200 focus:border-[#FF6B35]"
-            }`}
-          />
-
-          {/* Outlined Notch Label */}
+      ) : isStandardLabel ? (
+        /* --- STANDARD LABEL ABOVE (For Number, Date, Time, Datetime) --- */
+        <div className="flex flex-col gap-1.5 w-full">
           <label
             htmlFor={name}
-            className={`absolute left-3 px-1.5 bg-white text-xs font-medium transition-all duration-200 pointer-events-none rounded
-    ${
-      isFocused ||
-      hasValue ||
-      Boolean(value) ||
-      type === "date" ||
-      type === "Date" ||
-      type === "time" ||
-      type === "Time"
-        ? "-top-1 text-xs text-[#FF6B35]"
-        : "top-6 text-sm text-neutral-400 peer-focus:-top-1 peer-focus:text-xs peer-focus:text-[#FF6B35]"
-    }`}
+            className="text-xs font-semibold text-neutral-700"
           >
             {label} {required && <span className="text-[#FF6B35]">*</span>}
           </label>
-          {/* <input
-            type={type === "Date" ? "date" : type === "Time" ? "time" : type}
-            placeholder=""
-            autoComplete={
-              type === "email"
-                ? "email"
-                : type === "time" ||
-                    type === "Time" ||
-                    type === "date" ||
-                    type === "Date"
-                  ? "off"
-                  : "new-password"
+          <input
+            type={
+              type === "Date"
+                ? "date"
+                : type === "Time"
+                  ? "time"
+                  : type === "Datetime"
+                    ? "datetime-local"
+                    : type
             }
-            {...(type === "number" ? { min: min ?? 0, max } : {})}
+            id={name}
+            name={regName ?? name}
+            disabled={disabled}
+            min={type === "number" ? (min ?? 0) : min}
+            max={max}
             step={
               type === "time" || type === "Time"
                 ? "60"
                 : type === "number"
                   ? step || "any"
-                  : undefined
+                  : step
             }
+            {...dateProps}
+            defaultValue={
+              typeof defaultValue !== "boolean" ? defaultValue : undefined
+            }
+            ref={ref}
+            onBlur={onBlur}
+            onChange={(e) => {
+              onChange(e);
+              if (e.target.value && errors?.[name]) {
+                clearErrors?.(name);
+              }
+            }}
+            className={`w-full px-4 py-2.5 rounded-xl bg-white border text-neutral-900 text-sm focus:outline-none transition-all ${
+              errors?.[name]
+                ? "border-red-500 focus:ring-1 focus:ring-red-500"
+                : "border-neutral-200 focus:border-[#FF6B35]"
+            }`}
+          />
+        </div>
+      ) : (
+        /* --- FLOATING LABEL INPUT (Only for Text, Email, Password, etc.) --- */
+        <div className="relative w-full pt-2">
+          <input
+            type={type}
+            placeholder=""
+            autoComplete={type === "email" ? "email" : "new-password"}
             id={name}
             name={regName ?? name}
-            {...dateProps}
             disabled={disabled}
             defaultValue={
               typeof defaultValue === "string" ? defaultValue : undefined
             }
             ref={ref}
-            onFocus={() => {
-              setIsFocused(true);
-            }}
+            onFocus={() => setIsFocused(true)}
             onBlur={(e) => {
               setIsFocused(false);
               setHasValue(Boolean(e.target.value));
@@ -143,36 +342,28 @@ const TextInput: FC<InputType> = ({
             }}
             onChange={(e) => {
               setHasValue(Boolean(e.target.value));
-              onChange(e); // natively updates React Hook Form's state
+              onChange(e);
               if (e.target.value && errors?.[name]) {
                 clearErrors?.(name);
               }
             }}
-            className={`peer w-full px-4 py-3 rounded-xl bg-neutral-900 border text-white text-sm focus:outline-none transition-all ${
+            className={`peer w-full px-4 py-3 rounded-xl bg-white border text-neutral-900 text-sm focus:outline-none transition-all ${
               errors?.[name]
                 ? "border-red-500 focus:ring-1 focus:ring-red-500"
-                : "border-neutral-800 focus:border-[#FF6B35]"
+                : "border-neutral-200 focus:border-[#FF6B35]"
             }`}
           />
 
-     
           <label
             htmlFor={name}
-            className={`absolute left-3 px-1.5 bg-neutral-900 text-xs font-medium transition-all duration-200 pointer-events-none rounded
-              ${
-                isFocused ||
-                hasValue ||
-                Boolean(value) ||
-                type === "date" ||
-                type === "Date" ||
-                type === "time" ||
-                type === "Time"
-                  ? "-top-1 text-xs text-[#FF6B35]"
-                  : "top-6 text-sm text-neutral-500 peer-focus:-top-1 peer-focus:text-xs peer-focus:text-[#FF6B35]"
-              }`}
+            className={`absolute left-3 px-1.5 bg-white text-xs font-medium transition-all duration-200 pointer-events-none rounded ${
+              isFocused || hasValue || Boolean(value)
+                ? "-top-1 text-xs text-[#FF6B35]"
+                : "top-6 text-sm text-neutral-400 peer-focus:-top-1 peer-focus:text-xs peer-focus:text-[#FF6B35]"
+            }`}
           >
             {label} {required && <span className="text-[#FF6B35]">*</span>}
-          </label> */}
+          </label>
         </div>
       )}
 

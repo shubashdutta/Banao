@@ -8,11 +8,11 @@ interface BtnProps {
 const SubmiteBtn: FC<BtnProps> = ({ label }) => {
   const { closeModal } = useModal();
   return (
-    <div>
+    <div className=" space-x-2">
       <button
         type="button"
         onClick={closeModal}
-        className="px-5 py-2.5 rounded-xl text-sm font-semibold text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 transition-all"
+        className=" cursor-pointer px-5 py-2.5 rounded-xl text-sm font-semibold text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 transition-all"
       >
         Cancel
       </button>

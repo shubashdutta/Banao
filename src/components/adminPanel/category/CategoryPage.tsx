@@ -143,7 +143,6 @@ const CategoryPage = () => {
   const { openModal, closeModal } = useModal();
   /** Seed data stays at module scope; the list is state so toggles re-render. */
   const [cats, setCats] = useState<Cat[]>(categories);
-  /** Flips a single category's active flag, keyed by its unique slug. */
   const toggleActive = (slug: string) =>
     setCats((prev) =>
       prev.map((c) => (c.slug === slug ? { ...c, active: !c.active } : c)),
@@ -176,7 +175,7 @@ const CategoryPage = () => {
   };
 
   const handleSubCategory = () => {
-    openModal("Add Sub_Category", <AddSubCategory />, "small");
+    openModal("Add Sub_Category", <AddSubCategory />, "medium");
   };
   return (
     <div className="flex flex-col gap-5">

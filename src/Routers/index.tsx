@@ -25,6 +25,8 @@ import RbacEmployeesPage from "@/components/adminPanel/rbac-employees/RbacEmploy
 import HistoryPage from "@/components/adminPanel/history/HistoryPage";
 import SettingPages from "@/components/adminPanel/settings/SettingPages";
 
+import PricingPage from "@/components/adminPanel/pricing/PricingPage";
+
 const Index = () => {
   return (
     <Router>
@@ -48,7 +50,7 @@ const Index = () => {
           <Route path="/notifications" element={<NotificationPage />} />
           <Route path="/commission" element={<CommissionPage />} />
           <Route path="/reports" element={<EnterpriseReportsPage />} />
-          <Route path="/pricing" element={<CommissionPage />} />
+          <Route path="/pricing" element={<PricingPage />} />
           <Route path="/ai-analytics" element={<AIAnalyticsPage />} />
           <Route path="/reviews" element={<ReviewPage />} />
 

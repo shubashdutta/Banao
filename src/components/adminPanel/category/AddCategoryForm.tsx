@@ -1,5 +1,7 @@
+import FileUploader from "@/components/common/FileUploader";
 import SubmiteBtn from "@/components/common/SubmiteBtn";
 import TextInput from "@/components/common/TextInput";
+import { useFileInput } from "@/hooks/useFileInput";
 import TextArea from "antd/es/input/TextArea";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -86,8 +88,16 @@ const AddCategoryForm: React.FC<AddCategoryFormProps> = ({
     if (!slug || slug === autoSlug) {
       setValue("slug", generated);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enName]);
+
+  const [
+    files,
+    handleFilesChange,
+    removeFiles,
+    setFiles,
+    loadingFiles,
+    fileError,
+  ] = useFileInput(null, "PHOTO");
 
   const onValid = async (data: AddCategoryFormValues) => {
     await onSubmit?.({
@@ -154,29 +164,17 @@ const AddCategoryForm: React.FC<AddCategoryFormProps> = ({
           />
         </div>
 
-        {/* <TextInput
-          errors={errors}
-          label="Category Description"
-          name="discription"
-          register={register}
-          type="text"
-          clearErrors={clearErrors}
-          validation={{
-            maxLength: {
-              value: 300,
-              message: "Keep the description under 300 characters",
-            },
-          }}
-        /> */}
-
         <div className=" col-span-2">
-          <TextInput
-            errors={errors}
-            label="Banner Image URL"
-            name="image"
-            register={register}
-            type="text"
-            clearErrors={clearErrors}
+          <FileUploader
+            value={files}
+            onChange={handleFilesChange}
+            onRemove={removeFiles}
+            loading={loadingFiles}
+            error={fileError}
+            type="PHOTO"
+            label="Category Image"
+            description="Upload Category  image"
+            multiple={false}
           />
         </div>
 
@@ -218,45 +216,67 @@ const AddCategoryForm: React.FC<AddCategoryFormProps> = ({
           )}
         </div>
 
-        <div className="col-span-2 flex flex-col gap-1 rounded-xl border border-neutral-800/70 bg-slate-100 px-4 py-3">
-          {categoryToggles.map(({ name, label, description }) => {
-            const { ref, onChange, onBlur, name: regName } = register(name);
-            const checked = Boolean(watch(name));
+        <div className="col-span-2 rounded-xl border border-neutral-200 bg-white p-3 dark:border-neutral-800 dark:bg-slate-950">
+          <div className="flex flex-col gap-2">
+            {categoryToggles.map(({ name, label, description }) => {
+              const checked = Boolean(watch(name));
 
-            return (
-              <label
-                key={name}
-                htmlFor={name}
-                className="flex w-full cursor-pointer select-none items-center justify-between gap-4 py-2"
-              >
-                <span className="flex flex-col">
-                  <span
-                    className={`text-sm font-bold ${
-                      name === "emergency"
-                        ? "text-red-500"
-                        : "text-neutral-900 dark:text-white"
+              return (
+                <div
+                  key={name}
+                  className={`flex w-full items-center justify-between gap-4 rounded-lg border px-3.5 py-3 transition-all duration-200 ${
+                    checked
+                      ? "border-[#FF6B35]/40 bg-[#FF6B35]/5"
+                      : "border-neutral-200 bg-white hover:border-neutral-300 hover:bg-neutral-50 dark:border-neutral-800 dark:bg-slate-950 dark:hover:border-neutral-700 dark:hover:bg-slate-900"
+                  }`}
+                >
+                  <label
+                    htmlFor={name}
+                    className="min-w-0 flex-1 cursor-pointer select-none"
+                  >
+                    <div
+                      className={`text-sm font-semibold ${
+                        name === "emergency"
+                          ? "text-red-500"
+                          : "text-neutral-900 dark:text-white"
+                      }`}
+                    >
+                      {label}
+                    </div>
+
+                    <div className="mt-0.5 text-xs font-medium leading-5 text-neutral-500 dark:text-neutral-400">
+                      {description}
+                    </div>
+                  </label>
+
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={checked}
+                    aria-label={label}
+                    onClick={() =>
+                      setValue(name, !checked, {
+                        shouldDirty: true,
+                        shouldTouch: true,
+                        shouldValidate: true,
+                      })
+                    }
+                    className={`relative h-5 w-9 shrink-0 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/30 ${
+                      checked
+                        ? "bg-[#FF6B35]"
+                        : "bg-neutral-300 dark:bg-neutral-700"
                     }`}
                   >
-                    {label}
-                  </span>
-                  <span className="mt-0.5 text-xs font-medium text-neutral-500">
-                    {description}
-                  </span>
-                </span>
-
-                <input
-                  type="checkbox"
-                  id={name}
-                  name={regName ?? name}
-                  ref={ref}
-                  checked={checked}
-                  onChange={onChange}
-                  onBlur={onBlur}
-                  className="h-4 w-4 shrink-0 cursor-pointer rounded border-neutral-300 accent-[#FF6B35]"
-                />
-              </label>
-            );
-          })}
+                    <span
+                      className={`absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200 ${
+                        checked ? "translate-x-4" : "translate-x-0"
+                      }`}
+                    />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
 
