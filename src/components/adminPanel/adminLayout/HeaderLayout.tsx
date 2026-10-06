@@ -75,7 +75,7 @@ const Header: React.FC<AdminHeaderProps> = ({ colorBgContainer }) => {
             <span>Online</span>
             </div> */}
 
-        <button className="relative p-2.5 bg-neutral-50 border border-neutral-200/80 rounded-full text-neutral-600 hover:bg-neutral-100 transition-colors shadow-sm">
+        <button className=" cursor-pointer relative p-2.5 bg-neutral-50 border border-neutral-200/80 rounded-full text-neutral-600 hover:bg-neutral-100 transition-colors shadow-sm">
           <Bell className="w-4 h-4" />
           <span className="absolute top-2 right-2 w-2 h-2 bg-orange-500 rounded-full ring-2 ring-white"></span>
         </button>

@@ -1022,3 +1022,20 @@
 .admin-sider-scroll::-webkit-scrollbar-thumb:hover {
   background: #a3a3a3;
 }
+
+.quill-editor {
+  width: 100%;
+}
+
+.quill-editor .ql-toolbar {
+  width: 100%;
+}
+
+.quill-editor .ql-container {
+  height: var(--quill-height);
+}
+
+.quill-editor .ql-editor {
+  height: 100%;
+  overflow-y: auto;
+}

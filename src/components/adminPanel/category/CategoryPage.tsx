@@ -191,7 +191,7 @@ const CategoryPage = () => {
           onClick={handleAddCategory}
           className=" cursor-pointer h-10 px-4 rounded-full bg-[#FF6B35] hover:bg-[#e85a28] text-white text-sm font-bold shadow-md shadow-orange-500/25 flex items-center gap-1.5 transition shrink-0"
         >
-          <Plus className="w-4 h-4" /> Create Main Category
+          <Plus className="w-4 h-4" /> Create Category
         </button>
       </div>
       <div className="flex flex-col lg:flex-row gap-3 lg:items-center">

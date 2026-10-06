@@ -363,9 +363,9 @@ const DashboardPage = () => {
             >
               <div className="flex items-start justify-between gap-3">
                 <span
-                  className={`w-5 h-5 rounded-xl ${k.bg} flex items-center justify-center shrink-0 transition-transform group-hover:scale-105`}
+                  className={`w-4 h-4 rounded-xl ${k.bg} flex items-center justify-center shrink-0 transition-transform group-hover:scale-105`}
                 >
-                  <Icon className={`w-5 h-5 ${k.iconColor}`} />
+                  <Icon className={`w-4 h-4 ${k.iconColor}`} />
                 </span>
                 <span
                   className={`flex items-center gap-1 text-[11px] font-bold px-2 py-1 rounded-full border shrink-0 ${k.trend.direction === "down" ? "bg-red-50 text-red-600 border-red-100" : k.trend.direction === "flat" ? "bg-neutral-50 text-neutral-500 border-neutral-200" : "bg-emerald-50 text-emerald-700 border-emerald-100"}`}

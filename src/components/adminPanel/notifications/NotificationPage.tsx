@@ -8,6 +8,10 @@ import {
   Send,
   Trash2,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useModal } from "@/providers/ModalProvider";
+import NotificationForm from "./NotificationForm";
+import DispatchNotification from "./DispatchNotification";
 
 type Template = {
   channel: string;
@@ -95,6 +99,8 @@ const renderVars = (text: string, vars: string[]) => {
 const NotificationPage = () => {
   const [query, setQuery] = useState("");
   const [channel, setChannel] = useState("All Channels");
+
+  const { openModal, closeModal } = useModal();
   const filtered = useMemo(
     () =>
       templates.filter((t) => {
@@ -109,6 +115,16 @@ const NotificationPage = () => {
       }),
     [query, channel],
   );
+
+  const handleAddNotificationTemplate = () => {
+    openModal("Create Notification Template", <NotificationForm />, "medium");
+  };
+
+  const handleDispatchNotification = () => {
+    openModal("Test Dispatch Notification", <DispatchNotification />, "medium");
+  };
+
+  // const nvaigate = useNavigate();
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
@@ -125,7 +141,10 @@ const NotificationPage = () => {
             Manage notification templates, translations & dynamic variables.
           </p>
         </div>
-        <button className="h-10 px-4 rounded-full bg-[#FF6B35] hover:bg-[#e85a28] text-white text-sm font-bold shadow-md shadow-orange-500/25 flex items-center gap-1.5 transition shrink-0">
+        <button
+          onClick={handleAddNotificationTemplate}
+          className=" cursor-pointer h-10 px-4 rounded-full bg-[#FF6B35] hover:bg-[#e85a28] text-white text-sm font-bold shadow-md shadow-orange-500/25 flex items-center gap-1.5 transition shrink-0"
+        >
           <Plus className="w-4 h-4" /> Create New Template
         </button>
       </div>
@@ -203,10 +222,16 @@ const NotificationPage = () => {
               </div>
             </div>
             <div className="pt-3 border-t border-neutral-100 flex items-center gap-2">
-              <button className="h-9 px-4 rounded-full bg-[#FF6B35] hover:bg-[#e85a28] text-white text-[13px] font-bold flex items-center gap-1.5 transition">
+              <button
+                onClick={handleDispatchNotification}
+                className=" cursor-pointer h-9 px-4 rounded-full bg-[#FF6B35] hover:bg-[#e85a28] text-white text-[13px] font-bold flex items-center gap-1.5 transition"
+              >
                 <Send className="w-3.5 h-3.5" /> Test Dispatch
               </button>
-              <button className="h-9 px-4 rounded-full bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-[13px] font-bold flex items-center gap-1.5 transition">
+              <button
+                onClick={handleAddNotificationTemplate}
+                className=" cursor-pointer h-9 px-4 rounded-full bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-[13px] font-bold flex items-center gap-1.5 transition"
+              >
                 <Pencil className="w-3.5 h-3.5" /> Edit
               </button>
               <button className="ml-auto h-9 px-4 rounded-full bg-red-50 hover:bg-red-100 text-red-600 text-[13px] font-bold flex items-center gap-1.5 transition">

@@ -240,7 +240,7 @@ const PricingPage = () => {
       {/* Module Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+          <h1 className="text-xl text-slate-900 tracking-tight flex items-center gap-2">
             Service Pricing Configuration.
           </h1>
           <p className="text-xs text-slate-600 mt-1 font-medium">
@@ -263,7 +263,7 @@ const PricingPage = () => {
             <button
               key={cat.id}
               onClick={() => handleSelectCategory(cat)}
-              className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all shrink-0 flex items-center gap-2 border ${
+              className={` cursor-pointer px-4 py-2.5 rounded-2xl text-xs font-bold transition-all shrink-0 flex items-center gap-2 border ${
                 isSelected
                   ? "bg-[#FF6B00] text-white border-[#FF6B00] shadow-md shadow-orange-500/20"
                   : "bg-white text-slate-700 border-slate-200 hover:border-[#FF6B00]"
