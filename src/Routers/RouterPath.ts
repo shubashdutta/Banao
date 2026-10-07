@@ -2,7 +2,13 @@ import { lazy } from "react";
 
 export const LandingPage = lazy(() => import("@/App"));
 
- export const ServicePage = lazy(()=>import("@/components/landingPage/servicesPage"))
+export const ServicePage = lazy(
+  () => import("@/components/landingPage/servicesPage"),
+);
+
+export const HowWeWork = lazy(
+  () => import("@/components/landingPage/howWeWorkPage"),
+);
 
 export const DashboardPage = lazy(
   () => import("@/components/adminPanel/dashboard/DashboardPage"),

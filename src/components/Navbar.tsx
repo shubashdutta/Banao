@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { MapPin, Menu, X, ChevronDown, PhoneCall } from "lucide-react";
 import Button from "./Button";
 import Logo from "@/Assets/Image/Logo.png";
@@ -24,7 +25,9 @@ export default function Navbar({ onBookClick }: NavbarProps) {
     }
   };
 
-  const handleOpenBooking = (serviceName = "Plumbing") => {
+  const handleOpenBooking = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const serviceName =
+      (event.currentTarget as HTMLButtonElement).dataset.service ?? "Plumbing";
     setSelectedService(serviceName);
     setBookingModalOpen(true);
   };
@@ -36,7 +39,7 @@ export default function Navbar({ onBookClick }: NavbarProps) {
           {/* Zone 1: Single element Brand wordmark */}
           <div className="flex items-center gap-6">
             <a
-              href="#"
+              href="/"
               className="text-2xl font-black tracking-tight text-neutral-900 select-none flex items-center"
               aria-label="Banao Home"
             >
@@ -91,36 +94,36 @@ export default function Navbar({ onBookClick }: NavbarProps) {
 
           {/* Zone 2: Clean 4-6 text navigation links */}
           <nav className="hidden lg:flex items-center gap-8 text-sm font-medium text-neutral-600">
-            <a
-              href="#services"
+            <Link
+              to="/services"
               className="hover:text-neutral-900 transition-colors whitespace-nowrap"
             >
               Services
-            </a>
-            <a
-              href="#how-it-works"
+            </Link>
+            <Link
+              to="/how-we-work"
               className="hover:text-neutral-900 transition-colors whitespace-nowrap"
             >
               How It Works
-            </a>
-            <a
-              href="#download"
+            </Link>
+            <Link
+              to="#download"
               className="hover:text-neutral-900 transition-colors whitespace-nowrap"
             >
               App
-            </a>
-            <a
-              href="#pros"
+            </Link>
+            <Link
+              to="#pros"
               className="hover:text-neutral-900 transition-colors whitespace-nowrap"
             >
               For Pros
-            </a>
-            <a
-              href="#faq"
+            </Link>
+            <Link
+              to="#faq"
               className="hover:text-neutral-900 transition-colors whitespace-nowrap"
             >
               FAQ
-            </a>
+            </Link>
           </nav>
 
           {/* Zone 3: Primary action */}
@@ -136,6 +139,7 @@ export default function Navbar({ onBookClick }: NavbarProps) {
               variant="primary"
               size="md"
               onClick={handleOpenBooking}
+              data-service="Plumbing"
               href="#services"
             >
               Book a Service
@@ -191,7 +195,7 @@ export default function Navbar({ onBookClick }: NavbarProps) {
 
           <nav className="flex flex-col space-y-2 pt-1 text-sm font-medium text-neutral-700">
             <button
-              onClick={() => handleNavClick("#services")}
+              onClick={() => handleNavClick("/services")}
               className="text-left py-2 hover:text-[#FF6B35]"
             >
               Services

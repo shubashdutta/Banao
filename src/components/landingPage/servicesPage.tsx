@@ -1,133 +1,306 @@
+// import React, { useState } from "react";
+
+// const SERVICES_LIST = [
+//   {
+//     title: "General Handyman",
+//     category: "Repairs",
+//     image:
+//       "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80",
+//     description:
+//       "Quick home fixes, TV mounting, furniture assembly, and lock repairs.",
+//     startingPrice: "Rs. 400",
+//   },
+//   {
+//     title: "Plumbing Solutions",
+//     category: "Repairs",
+//     image:
+//       "https://images.unsplash.com/photo-1542013936693-893e364969bc?auto=format&fit=crop&w=600&q=80",
+//     description:
+//       "Leak detection, pipe sealing, faucet setup, and drain cleaning.",
+//     startingPrice: "Rs. 500",
+//   },
+//   {
+//     title: "Electrical Maintenance",
+//     category: "Repairs",
+//     image:
+//       "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=600&q=80",
+//     description:
+//       "Wiring checks, switchboard replacement, and light installations.",
+//     startingPrice: "Rs. 450",
+//   },
+//   {
+//     title: "Deep House Cleaning",
+//     category: "Cleaning",
+//     image:
+//       "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=600&q=80",
+//     description:
+//       "Kitchen degreasing, bathroom disinfection, and thorough dusting.",
+//     startingPrice: "Rs. 1,500",
+//   },
+//   {
+//     title: "AC Servicing & Repair",
+//     category: "Maintenance",
+//     image:
+//       "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?auto=format&fit=crop&w=600&q=80",
+//     description:
+//       "Filter deep clean, cooling check, and refrigerant gas refilling.",
+//     startingPrice: "Rs. 800",
+//   },
+//   {
+//     title: "Home Painting",
+//     category: "Maintenance",
+//     image:
+//       "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&w=600&q=80",
+//     description: "Interior wall prep, priming, and smooth texture finishes.",
+//     startingPrice: "Free Quote",
+//   },
+// ];
+
+// export default function ServicesPage() {
+//   const [selectedCategory, setSelectedCategory] = useState("All");
+
+//   const categories = ["All", "Repairs", "Cleaning", "Maintenance"];
+
+//   const filteredServices =
+//     selectedCategory === "All"
+//       ? SERVICES_LIST
+//       : SERVICES_LIST.filter((s) => s.category === selectedCategory);
+
+//   return (
+//     <div className="bg-gray-50 min-h-screen font-sans text-gray-800">
+//       <div className="max-w-3xl mx-auto px-6 pt-16 pb-8 text-center">
+//         <span className="text-xs font-bold uppercase tracking-widest text-[#FF6B00] bg-orange-50 px-3 py-1.5 rounded-full inline-block mb-3">
+//           Our Professional Services
+//         </span>
+//         <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900 mb-3">
+//           Reliable Experts for Your Home
+//         </h1>
+//         <p className="text-gray-600 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+//           Book trusted professionals for all your home needs with transparent
+//           pricing and fast scheduling.
+//         </p>
+
+//         {/* Filter Pills */}
+//         <div className="flex justify-center gap-2 mt-6">
+//           {categories.map((cat) => (
+//             <button
+//               key={cat}
+//               onClick={() => setSelectedCategory(cat)}
+//               className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+//                 selectedCategory === cat
+//                   ? "bg-[#FF6B35] text-white shadow-xs"
+//                   : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-100"
+//               }`}
+//             >
+//               {cat}
+//             </button>
+//           ))}
+//         </div>
+//       </div>
+
+//       <div className="max-w-6xl mx-auto px-6 pb-20">
+//         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+//           {filteredServices.map((service, index) => (
+//             <div
+//               key={index}
+//               className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-all flex flex-col justify-between group"
+//             >
+//               <div>
+//                 <div className="relative h-36 w-full overflow-hidden bg-gray-100">
+//                   <img
+//                     src={service.image}
+//                     alt={service.title}
+//                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+//                   />
+//                   <div className="absolute top-2.5 left-2.5">
+//                     <span className="text-[10px] font-bold uppercase tracking-wider text-white bg-gray-900/80 px-2.5 py-0.5 rounded">
+//                       {service.category}
+//                     </span>
+//                   </div>
+//                   <div className="absolute top-2.5 right-2.5">
+//                     <span className="text-[11px] font-semibold text-gray-900 bg-white/90 px-2 py-0.5 rounded shadow-xs">
+//                       {service.startingPrice}
+//                     </span>
+//                   </div>
+//                 </div>
+
+//                 {/* Content Area */}
+//                 <div className="p-5">
+//                   <h3 className="text-base font-bold text-gray-900 mb-1.5 group-hover:text-[#FF6B00] transition-colors">
+//                     {service.title}
+//                   </h3>
+//                   <p className="text-gray-500 text-xs leading-relaxed">
+//                     {service.description}
+//                   </p>
+//                 </div>
+//               </div>
+
+//               {/* Action Button */}
+//               <div className="px-5 pb-5 pt-0">
+//                 <button
+//                   onClick={() =>
+//                     alert(`Booking flow started for: ${service.title}`)
+//                   }
+//                   className="w-full bg-orange-500 hover:bg-orange-400 text-white text-xs font-semibold py-2.5 rounded-lg transition-colors cursor-pointer"
+//                 >
+//                   Book Now
+//                 </button>
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
 import React, { useState } from "react";
 
-const SERVICES_DATA = [
+const SERVICES_LIST = [
   {
-    id: 1,
-    category: "repairs",
-    title: "Expert Plumbing Repair",
+    title: "General Handyman",
+    category: "Repairs",
+    image:
+      "https://plus.unsplash.com/premium_photo-1661342490985-26da70d07a52?q=80&w=688&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     description:
-      "Leak fixes, pipe installations, drain cleaning, and emergency plumbing services by verified pros.",
-    price: "Starts at Rs. 500",
-    icon: "🚰",
+      "Quick home fixes, TV mounting, furniture assembly, and lock repairs.",
+    startingPrice: "Rs. 400",
   },
   {
-    id: 2,
-    category: "repairs",
+    title: "Plumbing Solutions",
+    category: "Repairs",
+    image:
+      "https://plus.unsplash.com/premium_photo-1664301972519-506636f0245d?q=80&w=1196&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    description:
+      "Leak detection, pipe sealing, faucet setup, and drain cleaning.",
+    startingPrice: "Rs. 500",
+  },
+  {
     title: "Electrical Maintenance",
+    category: "Repairs",
+    image:
+      "https://plus.unsplash.com/premium_photo-1661911021547-b0188f22d548?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     description:
-      "Wiring, switchboard fixes, appliance installation, and safety checks handled safely.",
-    price: "Starts at Rs. 400",
-    icon: "⚡",
+      "Wiring checks, switchboard replacement, and light installations.",
+    startingPrice: "Rs. 450",
   },
   {
-    id: 3,
-    category: "cleaning",
-    title: "Deep Home Cleaning",
+    title: "Deep House Cleaning",
+    category: "Cleaning",
+    image:
+      "https://plus.unsplash.com/premium_photo-1663011218145-c1d0c3ba3542?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     description:
-      "Comprehensive deep cleaning for kitchens, bathrooms, living rooms, and complete apartments.",
-    price: "Starts at Rs. 1,500",
-    icon: "🧹",
+      "Kitchen degreasing, bathroom disinfection, and thorough dusting.",
+    startingPrice: "Rs. 1,500",
   },
   {
-    id: 4,
-    category: "maintenance",
     title: "AC Servicing & Repair",
+    category: "Maintenance",
+    image:
+      "https://plus.unsplash.com/premium_photo-1682126009570-3fe2399162f7?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     description:
-      "Gas refilling, general filter cleaning, cooling checks, and complete unit servicing.",
-    price: "Starts at Rs. 800",
-    icon: "❄️",
+      "Filter deep clean, cooling check, and refrigerant gas refilling.",
+    startingPrice: "Rs. 800",
   },
   {
-    id: 5,
-    category: "repairs",
-    title: "Appliance Repair",
-    description:
-      "Quick diagnostics and repair for washing machines, refrigerators, microwaves, and more.",
-    price: "Starts at Rs. 600",
-    icon: "🔧",
-  },
-  {
-    id: 6,
-    category: "maintenance",
-    title: "Home Painting & Touchups",
-    description:
-      "Interior and exterior wall painting, waterproofing, and texture design by professionals.",
-    price: "Get Free Quote",
-    icon: "🎨",
+    title: "Home Painting",
+    category: "Maintenance",
+    image:
+      "https://images.unsplash.com/photo-1574359411659-15573a27fd0c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    description: "Interior wall prep, priming, and smooth texture finishes.",
+    startingPrice: "Free Quote",
   },
 ];
 
-const servicesPage = () => {
-  const [activeTab, setActiveTab] = useState("all");
+export default function ServicesPage() {
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const categories = ["All", "Repairs", "Cleaning", "Maintenance"];
 
   const filteredServices =
-    activeTab === "all"
-      ? SERVICES_DATA
-      : SERVICES_DATA.filter((item) => item.category === activeTab);
+    selectedCategory === "All"
+      ? SERVICES_LIST
+      : SERVICES_LIST.filter((s) => s.category === selectedCategory);
 
   return (
-    <div className="font-sans text-gray-900 bg-gray-50 min-h-screen">
+    <div className="bg-gray-50 min-h-screen font-sans text-gray-800">
       {/* 1. HERO SECTION */}
-      <section className="text-center py-16 px-4 bg-white border-b border-gray-200">
-        <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">
-          Whatever Your Home Needs,{" "}
-          <span className="text-[#FF6B00]">We've Got It Covered.</span>
+      <div className="max-w-4xl mx-auto px-6 pt-20 pb-12 text-center">
+        <span className="text-xs font-bold uppercase tracking-widest text-[#FF6B00] bg-orange-50 px-3 py-1.5 rounded-full inline-block mb-3">
+          Professional Home Solutions
+        </span>
+        <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-gray-900 mb-4 leading-tight">
+          Quality Services, Delivered Right <br />
+          <span className="text-[#FF6B00]">To Your Doorstep.</span>
         </h1>
-        <p className="text-base md:text-lg text-gray-600 max-w-xl mx-auto mb-8">
-          Explore our wide range of professional home services. Book trusted
-          experts in just a few taps.
+        <p className="text-gray-600 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+          From minor repairs to major upkeep, connect with verified and
+          experienced professionals who get the job done right the first time.
         </p>
 
-        {/* Category Filter Buttons */}
-        <div className="flex justify-center gap-3 flex-wrap">
-          {[
-            { id: "all", label: "All Services" },
-            { id: "repairs", label: "Repairs & Fixes" },
-            { id: "cleaning", label: "Cleaning" },
-            { id: "maintenance", label: "Maintenance" },
-          ].map((tab) => (
+        {/* Filter Pills */}
+        <div className="flex justify-center gap-2 mt-8">
+          {categories.map((cat) => (
             <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-5 py-2.5 rounded-full font-semibold transition-all duration-200 cursor-pointer ${
-                activeTab === tab.id
-                  ? "bg-[#FF6B00] text-white border-2 border-[#FF6B00] shadow-md"
-                  : "bg-white text-gray-700 border border-gray-300 hover:border-gray-400"
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                selectedCategory === cat
+                  ? "bg-orange-400 text-white shadow-xs"
+                  : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-100"
               }`}
             >
-              {tab.label}
+              {cat}
             </button>
           ))}
         </div>
-      </section>
+      </div>
 
-      {/* 2. SERVICES GRID SECTION */}
-      <section className="max-w-7xl mx-auto py-12 px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto px-6 pb-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredServices.map((service) => (
+          {filteredServices.map((service, index) => (
             <div
-              key={service.id}
-              className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col justify-between"
+              key={index}
+              className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-all flex flex-col justify-between group"
             >
               <div>
-                <div className="text-4xl mb-4">{service.icon}</div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
-                  {service.title}
-                </h3>
-                <p className="text-sm text-gray-600 leading-relaxed mb-6">
-                  {service.description}
-                </p>
+                {/* Image Banner */}
+                <div className="relative h-36 w-full overflow-hidden bg-gray-100">
+                  <img
+                    src={service.image}
+                    alt={service.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute top-2.5 left-2.5">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-white bg-gray-900/80 px-2.5 py-0.5 rounded">
+                      {service.category}
+                    </span>
+                  </div>
+                  <div className="absolute top-2.5 right-2.5">
+                    <span className="text-[11px] font-semibold text-gray-900 bg-white/90 px-2 py-0.5 rounded shadow-xs">
+                      {service.startingPrice}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Content Area */}
+                <div className="p-5">
+                  <h3 className="text-base font-bold text-gray-900 mb-1.5 group-hover:text-[#FF6B00] transition-colors">
+                    {service.title}
+                  </h3>
+                  <p className="text-gray-500 text-xs leading-relaxed">
+                    {service.description}
+                  </p>
+                </div>
               </div>
 
-              <div className="flex items-center justify-between border-t border-gray-100 pt-4">
-                <span className="font-bold text-[#FF6B00] text-sm">
-                  {service.price}
-                </span>
+              {/* Action Button */}
+              <div className="px-5 pb-5 pt-0">
                 <button
-                  className="bg-[#FF6B00] hover:bg-[#e05f00] text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors cursor-pointer"
                   onClick={() =>
                     alert(`Booking flow started for: ${service.title}`)
                   }
+                  className="w-full bg-orange-500 hover:bg-orange-400 text-white text-xs font-semibold py-2.5 rounded-lg transition-colors cursor-pointer"
                 >
                   Book Now
                 </button>
@@ -135,25 +308,78 @@ const servicesPage = () => {
             </div>
           ))}
         </div>
-      </section>
+      </div>
 
-      {/* 3. ORANGE CALLOUT BANNER */}
-      <section className="max-w-7xl mx-auto my-12 px-4 sm:px-6">
-        <div className="bg-[#FF6B00] text-white rounded-2xl p-8 sm:p-12 text-center shadow-md">
-          <h2 className="text-2xl sm:text-3xl font-extrabold mb-3">
-            Need a Custom Service or Emergency Repair?
+      {/* 3. VALUE PROPOSITION / WHY CHOOSE US SECTION */}
+      <div className="bg-white border-t border-b border-gray-200 py-16 px-6">
+        <div className="max-w-5xl mx-auto text-center mb-12">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+            Why Homeowners Trust Us
           </h2>
-          <p className="text-base opacity-90 max-w-xl mx-auto mb-6">
-            We are always ready to help. Download our app or reach out directly
-            to get instant professional assistance.
+          <p className="text-gray-600 text-sm max-w-xl mx-auto">
+            We ensure safety, transparency, and top-tier quality on every single
+            booking.
           </p>
-          <button className="bg-white text-[#FF6B00] hover:bg-gray-100 font-bold px-6 py-3 rounded-lg text-base transition-colors cursor-pointer shadow-sm">
-            Get the App
+        </div>
+
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="bg-gray-50 p-6 rounded-xl border border-gray-100 text-center">
+            <div className="w-10 h-10 bg-orange-100 text-[#FF6B00] rounded-full flex items-center justify-center font-bold mx-auto mb-4 text-lg">
+              ✓
+            </div>
+            <h3 className="font-bold text-gray-900 mb-2">
+              Verified Professionals
+            </h3>
+            <p className="text-gray-600 text-xs leading-relaxed">
+              All experts undergo strict background checks, skill tests, and
+              identity verification before joining.
+            </p>
+          </div>
+          <div className="bg-gray-50 p-6 rounded-xl border border-gray-100 text-center">
+            <div className="w-10 h-10 bg-orange-100 text-[#FF6B00] rounded-full flex items-center justify-center font-bold mx-auto mb-4 text-lg">
+              ₹
+            </div>
+            <h3 className="font-bold text-gray-900 mb-2">
+              Transparent Pricing
+            </h3>
+            <p className="text-gray-600 text-xs leading-relaxed">
+              No hidden fees or surprise costs. Review standard rates upfront
+              before confirming any booking.
+            </p>
+          </div>
+          <div className="bg-gray-50 p-6 rounded-xl border border-gray-100 text-center">
+            <div className="w-10 h-10 bg-orange-100 text-[#FF6B00] rounded-full flex items-center justify-center font-bold mx-auto mb-4 text-lg">
+              🛡️
+            </div>
+            <h3 className="font-bold text-gray-900 mb-2">
+              Satisfaction Guarantee
+            </h3>
+            <p className="text-gray-600 text-xs leading-relaxed">
+              We stand by our work. If you are not completely satisfied, our
+              support team ensures it gets resolved.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* 4. CALL TO ACTION BANNER */}
+      <div className="max-w-6xl mx-auto px-6 py-16">
+        <div className="bg-[#FF6B00] text-white rounded-2xl p-8 md:p-12 text-center shadow-md">
+          <h2 className="text-2xl md:text-3xl font-extrabold mb-3">
+            Ready to get started?
+          </h2>
+          <p className="text-sm md:text-base opacity-90 max-w-lg mx-auto mb-6">
+            Download our app or book online in seconds. Let us handle the chores
+            while you relax.
+          </p>
+          <button
+            onClick={() => alert("App download or booking triggered")}
+            className="bg-white text-[#FF6B00] hover:bg-gray-100 font-bold px-8 py-3 rounded-xl text-sm transition-colors cursor-pointer shadow-sm"
+          >
+            Book a Service Now
           </button>
         </div>
-      </section>
+      </div>
     </div>
   );
-};
-
-export default servicesPage;
+}
