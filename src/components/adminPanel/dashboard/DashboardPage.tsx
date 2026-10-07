@@ -573,9 +573,9 @@ const DashboardPage = () => {
             </button>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm min-w-[680px]">
-              <thead>
-                <tr className="text-left text-[11px] uppercase tracking-wider text-neutral-400 border-y border-neutral-100 bg-neutral-50/60">
+            <table className="w-full text-sm ">
+              <thead className=" bg-[#FF6B35] text-white">
+                <tr className="text-left text-[11px] uppercase tracking-wider  border-y border-neutral-100 ">
                   <th className="px-5 py-3 w-10">
                     <input
                       type="checkbox"

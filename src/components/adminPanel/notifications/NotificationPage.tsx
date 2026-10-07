@@ -130,7 +130,7 @@ const NotificationPage = () => {
       <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5 flex-wrap">
-            <h1 className="text-2xl font-semibold  tracking-tight text-neutral-900">
+            <h1 className="text-xl   tracking-tight text-neutral-900">
               Centralized Notification Template Hub
             </h1>
             <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-neutral-900 text-white">
@@ -179,7 +179,7 @@ const NotificationPage = () => {
           >
             <div className="flex items-start justify-between gap-2 flex-wrap">
               <div className="flex gap-1.5 flex-wrap">
-                <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-neutral-900 text-white">
+                <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-orange-400 text-white">
                   {t.channel}
                 </span>
                 <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-orange-50 text-[#FF6B35] border border-orange-100">
@@ -190,7 +190,7 @@ const NotificationPage = () => {
                 <CheckCircle2 className="w-4 h-4" /> Active
               </span>
             </div>
-            <h3 className="text-base font-extrabold text-neutral-900 tracking-tight">
+            <h3 className="text-base font-bold text-neutral-900 tracking-tight">
               {t.title}
             </h3>
             <div className="rounded-xl bg-neutral-50/70 border border-neutral-100 p-4 flex flex-col gap-3">
@@ -214,7 +214,7 @@ const NotificationPage = () => {
                 {t.vars.map((v) => (
                   <code
                     key={v}
-                    className="text-[11px] font-bold px-2 py-1 rounded-md bg-neutral-900 text-white"
+                    className="text-[11px] font-bold px-2 py-1 rounded-md bg-[#FF6B35] text-white"
                   >
                     {v}
                   </code>

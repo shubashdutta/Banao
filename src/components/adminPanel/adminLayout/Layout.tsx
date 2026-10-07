@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { Layout, Menu, theme } from "antd";
 import { ChevronLeft } from "lucide-react";
 import { AdminNavList } from "@/utils/AdminNavList";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import Header from "./HeaderLayout";
 import { ModalProvider } from "@/providers/ModalProvider";
+import GlobalLoader from "@/components/common/GlobalLoader";
 
 const { Sider, Content } = Layout;
 
@@ -188,7 +189,11 @@ const AdminLayout = ({ children }: { children?: React.ReactNode }) => {
             borderRadius: borderRadiusLG,
           }}
         >
-          <ModalProvider>{children || <Outlet />}</ModalProvider>
+          <ModalProvider>
+            <Suspense fallback={<GlobalLoader />}>
+              {children || <Outlet />}
+            </Suspense>
+          </ModalProvider>
         </Content>
       </Layout>
     </Layout>

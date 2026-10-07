@@ -1,5 +1,12 @@
 import React, { useMemo, useState } from "react";
-import { ChevronDown, Download, Eye, Search, ShieldCheck, X } from "lucide-react";
+import {
+  ChevronDown,
+  Download,
+  Eye,
+  Search,
+  ShieldCheck,
+  X,
+} from "lucide-react";
 
 type AuditSeverity = "Info" | "Warning" | "Critical";
 type AuditModule =
@@ -290,9 +297,12 @@ const HistoryPage = () => {
         .join(","),
     );
 
-    const blob = new Blob([[header.map(toCsvCell).join(","), ...body].join("\n")], {
-      type: "text/csv;charset=utf-8;",
-    });
+    const blob = new Blob(
+      [[header.map(toCsvCell).join(","), ...body].join("\n")],
+      {
+        type: "text/csv;charset=utf-8;",
+      },
+    );
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
@@ -315,8 +325,8 @@ const HistoryPage = () => {
             </span>
           </div>
           <p className="text-sm text-neutral-500 mt-1.5">
-            Real-time immutable administrative trail capturing all state changes,
-            role updates, pricing modifications, and payout approvals.
+            Real-time immutable administrative trail capturing all state
+            changes, role updates, pricing modifications, and payout approvals.
           </p>
         </div>
         <div className="flex items-center gap-2 text-[11px] font-bold text-neutral-400 uppercase tracking-wider shrink-0">
@@ -366,7 +376,7 @@ const HistoryPage = () => {
       {/* Audit trail table */}
       <div className="bg-white border border-neutral-200/70 rounded-2xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm min-w-[1180px]">
+          <table className="w-full text-sm ">
             <thead>
               <tr className="text-left text-xs font-bold uppercase tracking-wider text-white bg-[#FF6B35]">
                 <th className="px-4 py-3.5 w-10">
@@ -391,7 +401,7 @@ const HistoryPage = () => {
               {filtered.map((log) => (
                 <tr
                   key={log.id}
-                  className="border-b border-neutral-100 last:border-0 hover:bg-neutral-50/70 transition"
+                  className=" w-full border-b border-neutral-100 last:border-0 hover:bg-neutral-50/70 transition"
                 >
                   <td className="px-4 py-3.5">
                     <input
@@ -403,7 +413,7 @@ const HistoryPage = () => {
                     />
                   </td>
                   <td className="px-4 py-3.5 whitespace-nowrap">
-                    <div className="font-bold text-neutral-900 text-[13px]">
+                    <div className=" text-neutral-900 text-[13px]">
                       {log.timestamp.split(" ")[0]}
                     </div>
                     <div className="text-[11px] font-semibold text-neutral-400">
@@ -416,7 +426,7 @@ const HistoryPage = () => {
                         {initials(log.admin)}
                       </span>
                       <div>
-                        <div className="font-bold text-neutral-900 text-[13px]">
+                        <div className=" text-neutral-900 text-[13px]">
                           {log.admin}
                         </div>
                         <div className="text-[11px] font-semibold text-neutral-400">
@@ -426,7 +436,7 @@ const HistoryPage = () => {
                     </div>
                   </td>
                   <td className="px-4 py-3.5 max-w-[380px]">
-                    <div className="font-extrabold text-neutral-900 text-[13px] tracking-tight">
+                    <div className=" text-neutral-900 text-[13px] tracking-tight">
                       {log.action}
                     </div>
                     <div className="text-[11px] font-medium text-neutral-400 mt-0.5">

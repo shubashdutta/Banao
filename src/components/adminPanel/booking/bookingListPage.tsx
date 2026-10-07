@@ -588,11 +588,10 @@ const BookingListPage = () => {
                     <td className="px-4 py-3.5">
                       <div className="   text-neutral-900">{b.id}</div>
                       <div className="text-xs text-neutral-500 font-medium flex items-center gap-1">
-                        <User className="w-3 h-3" />
                         {b.customer}
                       </div>
                       <div className="text-[11px] text-neutral-400 font-medium flex items-center gap-1">
-                        <CalendarDays className="w-3 h-3" />
+                        {/* <CalendarDays className="w-3 h-3" /> */}
                         {b.date} - {b.time}
                       </div>
                     </td>

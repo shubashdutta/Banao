@@ -187,7 +187,7 @@
 // export default TextInput;
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, type FC } from "react";
+import React, { useEffect, useRef, useState, type FC } from "react";
 
 interface InputType {
   register: any;
@@ -225,9 +225,26 @@ const TextInput: FC<InputType> = ({
   step,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
-  const [hasValue, setHasValue] = useState(false);
+  const [hasValue, setHasValue] = useState(
+    Boolean(value ?? defaultValue ?? "")
+  );
+  const innerRef = useRef<HTMLInputElement | null>(null);
 
   const { ref, onChange, onBlur, name: regName } = register(name, validation);
+
+  // RHF defaultValues / reset() populate the DOM after mount, so sync label
+  useEffect(() => {
+    if (innerRef.current?.value || value || defaultValue) {
+      setHasValue(true);
+    }
+  }, [value, defaultValue]);
+
+  // Merge RHF ref + our own ref so we can read DOM value on mount
+  const setRefs = (el: HTMLInputElement | null) => {
+    innerRef.current = el;
+    if (el && el.value) setHasValue(true);
+    ref(el);
+  };
 
   const endOfYear = new Date(new Date().getFullYear(), 11, 31)
     .toISOString()
@@ -331,9 +348,11 @@ const TextInput: FC<InputType> = ({
             name={regName ?? name}
             disabled={disabled}
             defaultValue={
-              typeof defaultValue === "string" ? defaultValue : undefined
+              typeof defaultValue === "string" || typeof defaultValue === "number"
+                ? defaultValue
+                : undefined
             }
-            ref={ref}
+            ref={setRefs}
             onFocus={() => setIsFocused(true)}
             onBlur={(e) => {
               setIsFocused(false);

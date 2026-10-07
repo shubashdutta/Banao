@@ -1,31 +1,32 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import App from "@/App";
-import DashboardPage from "@/components/adminPanel/dashboard/DashboardPage";
-import CustomerPage from "@/components/adminPanel/customers/CustomerPage";
-import ProviderPage from "@/components/adminPanel/provider/providerPage";
-import AdminLayout from "@/components/adminPanel/adminLayout/Layout";
-import BookingListPage from "@/components/adminPanel/booking/bookingListPage";
-import GobalLocationPage from "@/components/adminPanel/gobalLocation/gobalLocationPage";
-import LiveTrackingPage from "@/components/adminPanel/liveTracking/LiveTrackingPage";
-import CategoryPage from "@/components/adminPanel/category/CategoryPage";
-import TimeSlotPage from "@/components/adminPanel/timeSlot/TimeSlotPage";
-import NotFoundPage from "@/components/NotFoundPage";
 import LoginPage from "@/components/loginPage";
-import PamentPayoutPage from "@/components/adminPanel/paymenPayout/PamentPayoutPage";
-import PageBuilderPage from "@/components/adminPanel/pageBuilder/PageBuilderPage";
-import NotificationPage from "@/components/adminPanel/notifications/NotificationPage";
-import CommissionPage from "@/components/adminPanel/commission/CommissionPage";
-import AIAnalyticsPage from "@/components/adminPanel/ai_Analytics/AIAnalyticsPage";
-import EnterpriseReportsPage from "@/components/adminPanel/reports/EnterpriseReportsPage";
-import ReviewPage from "@/components/adminPanel/reviews/ReviewPage";
-import SupportPage from "@/components/adminPanel/supports/SupportPage";
-import MarketingPage from "@/components/adminPanel/marketing/MarketingPage";
-import RbacEmployeesPage from "@/components/adminPanel/rbac-employees/RbacEmployeesPage";
-import HistoryPage from "@/components/adminPanel/history/HistoryPage";
-import SettingPages from "@/components/adminPanel/settings/SettingPages";
-
-import PricingPage from "@/components/adminPanel/pricing/PricingPage";
+import AdminLayout from "@/components/adminPanel/adminLayout/Layout";
+import {
+  AIAnalyticsPage,
+  BookingListPage,
+  CategoryPage,
+  CommissionPage,
+  CustomerPage,
+  DashboardPage,
+  EnterpriseReportsPage,
+  GobalLocationPage,
+  HistoryPage,
+  LiveTrackingPage,
+  MarketingPage,
+  NotificationPage,
+  PageBuilderPage,
+  PamentPayoutPage,
+  PricingPage,
+  ProviderPage,
+  RbacEmployeesPage,
+  ReviewPage,
+  SettingPages,
+  SupportPage,
+  TimeSlotPage,
+} from "./RouterPath";
+import NotFoundPage from "@/components/NotFoundPage";
 
 const Index = () => {
   return (

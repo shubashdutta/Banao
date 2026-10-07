@@ -10,6 +10,8 @@ import {
   Plus,
   Route,
 } from "lucide-react";
+import { useModal } from "@/providers/ModalProvider";
+import AddLocationForm from "./AddLocationForm";
 
 type LocationCard = {
   title: string;
@@ -58,6 +60,12 @@ const locationCards: LocationCard[] = [
 
 const GobalLocationPage = () => {
   const [activeTab, setActiveTab] = useState("municipalities");
+
+  const { openModal } = useModal();
+
+  const handleAddLcoation = () => {
+    openModal("Add New DISTRICT Record", <AddLocationForm />, "medium");
+  };
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
@@ -78,7 +86,10 @@ const GobalLocationPage = () => {
           <button className="h-10 px-4 rounded-full border border-neutral-200 bg-white text-sm font-semibold text-neutral-700 hover:bg-neutral-50 shadow-sm flex items-center gap-1.5 transition">
             <Download className="w-4 h-4" /> Export Hierarchy
           </button>
-          <button className="h-10 px-4 rounded-full bg-[#FF6B35] hover:bg-[#e85a28] text-white text-sm font-bold shadow-md shadow-orange-500/25 flex items-center gap-1.5 transition">
+          <button
+            onClick={handleAddLcoation}
+            className=" cursor-pointer h-10 px-4 rounded-full bg-[#FF6B35] hover:bg-[#e85a28] text-white text-sm font-bold shadow-md shadow-orange-500/25 flex items-center gap-1.5 transition"
+          >
             <Plus className="w-4 h-4" /> Add Location Entry
           </button>
         </div>
