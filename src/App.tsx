@@ -209,7 +209,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-[#171717]">
-      <Navbar onBookClick={() => handleOpenBooking("Plumbing")} />
+      {/* <Navbar onBookClick={() => handleOpenBooking("Plumbing")} /> */}
 
       {/* Hero Section */}
       <section className="hero">
@@ -866,8 +866,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* Footer */}
-      <Footer />
+      {/* <Footer /> */}
 
       {/* Interactive Booking Modal */}
       <BookingModal

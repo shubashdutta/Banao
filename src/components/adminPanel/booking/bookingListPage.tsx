@@ -547,7 +547,7 @@ const BookingListPage = () => {
         </div>
       )}
       <div className="bg-white border border-neutral-200/70 rounded-2xl shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto w-full">
           <table className="w-full text-sm ">
             <thead>
               <tr className="text-left text-[11px] uppercase tracking-wider text-white border-b border-neutral-100 bg-[#FF6B35]">
@@ -605,7 +605,7 @@ const BookingListPage = () => {
                         {b.area}, {b.city}
                       </div>
                     </td>
-                    <td className="px-4 py-3.5">
+                    <td className="px-1 py-3.5">
                       <span
                         onClick={() => navigate("/live-tracking")}
                         className={` cursor-pointer hover:text-orange-400 text-[13px]  inline-flex items-center gap-1.5 ${b.provider === "Unassigned" ? "text-amber-600" : "text-neutral-700"}`}

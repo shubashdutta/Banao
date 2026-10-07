@@ -11,6 +11,8 @@ export default function Navbar({ onBookClick }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [selectedCity, setSelectedCity] = useState("Kathmandu");
   const [cityDropdownOpen, setCityDropdownOpen] = useState(false);
+  const [bookingModalOpen, setBookingModalOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState("Plumbing");
 
   const cities = ["Kathmandu", "Lalitpur", "Bhaktapur", "Pokhara"];
 
@@ -20,6 +22,11 @@ export default function Navbar({ onBookClick }: NavbarProps) {
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }
+  };
+
+  const handleOpenBooking = (serviceName = "Plumbing") => {
+    setSelectedService(serviceName);
+    setBookingModalOpen(true);
   };
 
   return (
@@ -128,7 +135,7 @@ export default function Navbar({ onBookClick }: NavbarProps) {
             <Button
               variant="primary"
               size="md"
-              onClick={onBookClick}
+              onClick={handleOpenBooking}
               href="#services"
             >
               Book a Service

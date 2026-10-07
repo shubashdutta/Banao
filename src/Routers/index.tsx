@@ -1,7 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import App from "@/App";
-import LoginPage from "@/components/loginPage";
+
 import AdminLayout from "@/components/adminPanel/adminLayout/Layout";
 import {
   AIAnalyticsPage,
@@ -24,17 +23,17 @@ import {
   ReviewPage,
   SettingPages,
   SupportPage,
+  TestEditor,
   TimeSlotPage,
 } from "./RouterPath";
 import NotFoundPage from "@/components/NotFoundPage";
+import WebsiteRoutes from "./WebsiteRoutes";
 
 const Index = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/login" element={<LoginPage />} />
-
+        {WebsiteRoutes}
         <Route element={<AdminLayout />}>
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/customer" element={<CustomerPage />} />
@@ -62,6 +61,8 @@ const Index = () => {
           <Route path="/settings" element={<SettingPages />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
+
+        <Route path="/text" element={<TestEditor />} />
       </Routes>
     </Router>
   );

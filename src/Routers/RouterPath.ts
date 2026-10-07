@@ -1,5 +1,9 @@
 import { lazy } from "react";
 
+export const LandingPage = lazy(() => import("@/App"));
+
+ export const ServicePage = lazy(()=>import("@/components/landingPage/servicesPage"))
+
 export const DashboardPage = lazy(
   () => import("@/components/adminPanel/dashboard/DashboardPage"),
 );
@@ -82,4 +86,8 @@ export const SettingPages = lazy(
 
 export const PricingPage = lazy(
   () => import("@/components/adminPanel/pricing/PricingPage"),
+);
+
+export const TestEditor = lazy(
+  () => import("@/components/common/BlogTextEdtor"),
 );

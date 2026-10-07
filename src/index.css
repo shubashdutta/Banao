@@ -1039,3 +1039,116 @@
   height: 100%;
   overflow-y: auto;
 }
+
+/* src/index.css */
+
+/* 1. Expand the dialog card width and align the layout elements neatly */
+.mdxeditor-popup-container,
+[data-radix-popper-content-wrapper],
+div[class*="_dialogPopup_"] {
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  padding: 24px !important;
+  z-index: 9999 !important;
+  width: 450px !important; /* Forces the card container to be wide enough */
+  max-width: 90vw !important;
+  box-sizing: border-box !important;
+}
+
+/* 2. Format the form layout grid so everything aligns neatly on the left */
+div[class*="_dialogForm_"],
+.mdxeditor-popup-container form {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  text-align: left !important; /* Forces labels and text to align left */
+  align-items: flex-start !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* 3. TRANSFORMATION: Turn the "Choose File" container into a beautiful input bar */
+.mdxeditor-popup-container input[type="file"],
+div[class*="_dialogForm_"] input[type="file"] {
+  width: 100% !important;
+  padding: 8px !important;
+  margin-top: 6px !important;
+  margin-bottom: 14px !important;
+  border: 2px dashed #cbd5e1 !important; /* Clean dashed placeholder border */
+  border-radius: 8px !important;
+  background-color: #f8fafc !important; /* Soft grey background light canvas */
+  cursor: pointer !important;
+  box-sizing: border-box !important;
+  font-size: 14px !important;
+  color: #64748b !important;
+}
+
+/* 4. DESIGN: Modern custom button overlay rule styling for the file picker trigger */
+.mdxeditor-popup-container input[type="file"]::file-selector-button,
+div[class*="_dialogForm_"] input[type="file"]::file-selector-button {
+  background-color: #0070f3 !important; /* Matches your action blue theme color */
+  color: #ffffff !important;
+  border: none !important;
+  padding: 8px 16px !important;
+  margin-right: 12px !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s ease !important;
+}
+
+/* Smooth button hover interaction effect */
+.mdxeditor-popup-container input[type="file"]::file-selector-button:hover,
+div[class*="_dialogForm_"] input[type="file"]::file-selector-button:hover {
+  background-color: #0056b3 !important;
+}
+
+/* 5. Keep all standard text inputs neatly contained inside the card borders */
+.mdxeditor-popup-container input[type="text"],
+div[class*="_dialogForm_"] input[type="text"] {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 10px 12px !important;
+  margin-top: 4px !important;
+  margin-bottom: 12px !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 6px !important;
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  display: block !important;
+  box-sizing: border-box !important; /* Prevents padding leakages */
+}
+
+/* 6. Style text field label titles neatly */
+.mdxeditor-popup-container label,
+div[class*="_dialogForm_"] label {
+  display: block !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  color: #475569 !important;
+  margin-top: 6px !important;
+  text-align: left !important;
+  width: 100% !important;
+}
+
+/* 7. Separate the bottom Action Buttons panel wrapper */
+div[class*="_buttonGroup_"] {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 12px !important;
+  width: 100% !important;
+  margin-top: 8px !important;
+}
+
+/* Fix basic toolbar button styles overridden by Tailwind */
+.mdxeditor button {
+  all: unset;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
