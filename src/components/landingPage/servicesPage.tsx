@@ -1,159 +1,3 @@
-// import React, { useState } from "react";
-
-// const SERVICES_LIST = [
-//   {
-//     title: "General Handyman",
-//     category: "Repairs",
-//     image:
-//       "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80",
-//     description:
-//       "Quick home fixes, TV mounting, furniture assembly, and lock repairs.",
-//     startingPrice: "Rs. 400",
-//   },
-//   {
-//     title: "Plumbing Solutions",
-//     category: "Repairs",
-//     image:
-//       "https://images.unsplash.com/photo-1542013936693-893e364969bc?auto=format&fit=crop&w=600&q=80",
-//     description:
-//       "Leak detection, pipe sealing, faucet setup, and drain cleaning.",
-//     startingPrice: "Rs. 500",
-//   },
-//   {
-//     title: "Electrical Maintenance",
-//     category: "Repairs",
-//     image:
-//       "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=600&q=80",
-//     description:
-//       "Wiring checks, switchboard replacement, and light installations.",
-//     startingPrice: "Rs. 450",
-//   },
-//   {
-//     title: "Deep House Cleaning",
-//     category: "Cleaning",
-//     image:
-//       "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=600&q=80",
-//     description:
-//       "Kitchen degreasing, bathroom disinfection, and thorough dusting.",
-//     startingPrice: "Rs. 1,500",
-//   },
-//   {
-//     title: "AC Servicing & Repair",
-//     category: "Maintenance",
-//     image:
-//       "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?auto=format&fit=crop&w=600&q=80",
-//     description:
-//       "Filter deep clean, cooling check, and refrigerant gas refilling.",
-//     startingPrice: "Rs. 800",
-//   },
-//   {
-//     title: "Home Painting",
-//     category: "Maintenance",
-//     image:
-//       "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&w=600&q=80",
-//     description: "Interior wall prep, priming, and smooth texture finishes.",
-//     startingPrice: "Free Quote",
-//   },
-// ];
-
-// export default function ServicesPage() {
-//   const [selectedCategory, setSelectedCategory] = useState("All");
-
-//   const categories = ["All", "Repairs", "Cleaning", "Maintenance"];
-
-//   const filteredServices =
-//     selectedCategory === "All"
-//       ? SERVICES_LIST
-//       : SERVICES_LIST.filter((s) => s.category === selectedCategory);
-
-//   return (
-//     <div className="bg-gray-50 min-h-screen font-sans text-gray-800">
-//       <div className="max-w-3xl mx-auto px-6 pt-16 pb-8 text-center">
-//         <span className="text-xs font-bold uppercase tracking-widest text-[#FF6B00] bg-orange-50 px-3 py-1.5 rounded-full inline-block mb-3">
-//           Our Professional Services
-//         </span>
-//         <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900 mb-3">
-//           Reliable Experts for Your Home
-//         </h1>
-//         <p className="text-gray-600 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
-//           Book trusted professionals for all your home needs with transparent
-//           pricing and fast scheduling.
-//         </p>
-
-//         {/* Filter Pills */}
-//         <div className="flex justify-center gap-2 mt-6">
-//           {categories.map((cat) => (
-//             <button
-//               key={cat}
-//               onClick={() => setSelectedCategory(cat)}
-//               className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-//                 selectedCategory === cat
-//                   ? "bg-[#FF6B35] text-white shadow-xs"
-//                   : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-100"
-//               }`}
-//             >
-//               {cat}
-//             </button>
-//           ))}
-//         </div>
-//       </div>
-
-//       <div className="max-w-6xl mx-auto px-6 pb-20">
-//         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-//           {filteredServices.map((service, index) => (
-//             <div
-//               key={index}
-//               className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-all flex flex-col justify-between group"
-//             >
-//               <div>
-//                 <div className="relative h-36 w-full overflow-hidden bg-gray-100">
-//                   <img
-//                     src={service.image}
-//                     alt={service.title}
-//                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-//                   />
-//                   <div className="absolute top-2.5 left-2.5">
-//                     <span className="text-[10px] font-bold uppercase tracking-wider text-white bg-gray-900/80 px-2.5 py-0.5 rounded">
-//                       {service.category}
-//                     </span>
-//                   </div>
-//                   <div className="absolute top-2.5 right-2.5">
-//                     <span className="text-[11px] font-semibold text-gray-900 bg-white/90 px-2 py-0.5 rounded shadow-xs">
-//                       {service.startingPrice}
-//                     </span>
-//                   </div>
-//                 </div>
-
-//                 {/* Content Area */}
-//                 <div className="p-5">
-//                   <h3 className="text-base font-bold text-gray-900 mb-1.5 group-hover:text-[#FF6B00] transition-colors">
-//                     {service.title}
-//                   </h3>
-//                   <p className="text-gray-500 text-xs leading-relaxed">
-//                     {service.description}
-//                   </p>
-//                 </div>
-//               </div>
-
-//               {/* Action Button */}
-//               <div className="px-5 pb-5 pt-0">
-//                 <button
-//                   onClick={() =>
-//                     alert(`Booking flow started for: ${service.title}`)
-//                   }
-//                   className="w-full bg-orange-500 hover:bg-orange-400 text-white text-xs font-semibold py-2.5 rounded-lg transition-colors cursor-pointer"
-//                 >
-//                   Book Now
-//                 </button>
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
 import React, { useState } from "react";
 
 const SERVICES_LIST = [
@@ -224,8 +68,7 @@ export default function ServicesPage() {
 
   return (
     <div className="bg-gray-50 min-h-screen font-sans text-gray-800">
-      {/* 1. HERO SECTION */}
-      <div className="max-w-4xl mx-auto px-6 pt-20 pb-12 text-center">
+      <div className="max-w-4xl mx-auto px-6 pt-10 pb-10 text-center">
         <span className="text-xs font-bold uppercase tracking-widest text-[#FF6B00] bg-orange-50 px-3 py-1.5 rounded-full inline-block mb-3">
           Professional Home Solutions
         </span>
@@ -238,21 +81,22 @@ export default function ServicesPage() {
           experienced professionals who get the job done right the first time.
         </p>
 
-        {/* Filter Pills */}
-        <div className="flex justify-center gap-2 mt-8">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                selectedCategory === cat
-                  ? "bg-orange-400 text-white shadow-xs"
-                  : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-100"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+        <div className="w-full overflow-x-auto no-scrollbar py-2 mt-8">
+          <div className="flex justify-start sm:justify-center gap-2 px-4 min-w-max mx-auto">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
+                  selectedCategory === cat
+                    ? "bg-[#ff6b00] text-white shadow-sm"
+                    : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-100"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -264,7 +108,6 @@ export default function ServicesPage() {
               className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-all flex flex-col justify-between group"
             >
               <div>
-                {/* Image Banner */}
                 <div className="relative h-36 w-full overflow-hidden bg-gray-100">
                   <img
                     src={service.image}
@@ -283,7 +126,6 @@ export default function ServicesPage() {
                   </div>
                 </div>
 
-                {/* Content Area */}
                 <div className="p-5">
                   <h3 className="text-base font-bold text-gray-900 mb-1.5 group-hover:text-[#FF6B00] transition-colors">
                     {service.title}
@@ -310,7 +152,6 @@ export default function ServicesPage() {
         </div>
       </div>
 
-      {/* 3. VALUE PROPOSITION / WHY CHOOSE US SECTION */}
       <div className="bg-white border-t border-b border-gray-200 py-16 px-6">
         <div className="max-w-5xl mx-auto text-center mb-12">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">

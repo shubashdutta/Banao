@@ -226,20 +226,18 @@ const TextInput: FC<InputType> = ({
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [hasValue, setHasValue] = useState(
-    Boolean(value ?? defaultValue ?? "")
+    Boolean(value ?? defaultValue ?? ""),
   );
   const innerRef = useRef<HTMLInputElement | null>(null);
 
   const { ref, onChange, onBlur, name: regName } = register(name, validation);
 
-  // RHF defaultValues / reset() populate the DOM after mount, so sync label
   useEffect(() => {
     if (innerRef.current?.value || value || defaultValue) {
       setHasValue(true);
     }
   }, [value, defaultValue]);
 
-  // Merge RHF ref + our own ref so we can read DOM value on mount
   const setRefs = (el: HTMLInputElement | null) => {
     innerRef.current = el;
     if (el && el.value) setHasValue(true);
@@ -257,9 +255,7 @@ const TextInput: FC<InputType> = ({
         : {}
       : {};
 
-  // Check if type should use standard top label instead of floating label
   const isStandardLabel =
-    type === "number" ||
     type === "date" ||
     type === "Date" ||
     type === "time" ||
@@ -270,7 +266,6 @@ const TextInput: FC<InputType> = ({
   return (
     <div className="flex flex-col w-full space-y-1">
       {type === "checkbox" ? (
-        /* --- CHECKBOX --- */
         <label className="flex items-center gap-3 cursor-pointer text-sm text-neutral-300 select-none py-1">
           <input
             type="checkbox"
@@ -309,15 +304,9 @@ const TextInput: FC<InputType> = ({
             id={name}
             name={regName ?? name}
             disabled={disabled}
-            min={type === "number" ? (min ?? 0) : min}
+            min={min}
             max={max}
-            step={
-              type === "time" || type === "Time"
-                ? "60"
-                : type === "number"
-                  ? step || "any"
-                  : step
-            }
+            step={type === "time" || type === "Time" ? "60" : step}
             {...dateProps}
             defaultValue={
               typeof defaultValue !== "boolean" ? defaultValue : undefined
@@ -348,7 +337,8 @@ const TextInput: FC<InputType> = ({
             name={regName ?? name}
             disabled={disabled}
             defaultValue={
-              typeof defaultValue === "string" || typeof defaultValue === "number"
+              typeof defaultValue === "string" ||
+              typeof defaultValue === "number"
                 ? defaultValue
                 : undefined
             }

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { MapPin, Menu, X, ChevronDown, PhoneCall } from "lucide-react";
 import Button from "./Button";
 import Logo from "@/Assets/Image/Logo.png";
@@ -11,6 +11,12 @@ interface NavbarProps {
 export default function Navbar({ onBookClick }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [selectedCity, setSelectedCity] = useState("Kathmandu");
+
+  const location = useLocation();
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
   const [cityDropdownOpen, setCityDropdownOpen] = useState(false);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState("Plumbing");
@@ -38,8 +44,8 @@ export default function Navbar({ onBookClick }: NavbarProps) {
         <div className="flex items-center justify-between h-18">
           {/* Zone 1: Single element Brand wordmark */}
           <div className="flex items-center gap-6">
-            <a
-              href="/"
+            <Link
+              to="/"
               className="text-2xl font-black tracking-tight text-neutral-900 select-none flex items-center"
               aria-label="Banao Home"
             >
@@ -51,7 +57,7 @@ export default function Navbar({ onBookClick }: NavbarProps) {
                 alt="Banao Logo"
                 className="h-12 w-auto object-contain"
               />
-            </a>
+            </Link>
 
             {/* City Selector Pill */}
             {/* <div className="relative hidden md:block">
@@ -106,7 +112,7 @@ export default function Navbar({ onBookClick }: NavbarProps) {
             >
               How It Works
             </Link>
-            <Link
+            {/* <Link
               to="#download"
               className="hover:text-neutral-900 transition-colors whitespace-nowrap"
             >
@@ -117,12 +123,25 @@ export default function Navbar({ onBookClick }: NavbarProps) {
               className="hover:text-neutral-900 transition-colors whitespace-nowrap"
             >
               For Pros
-            </Link>
+            </Link> */}
             <Link
-              to="#faq"
+              to="/faq"
               className="hover:text-neutral-900 transition-colors whitespace-nowrap"
             >
               FAQ
+            </Link>
+            <Link
+              to="/about-us"
+              className="hover:text-neutral-900 transition-colors whitespace-nowrap"
+            >
+              About_us
+            </Link>
+
+            <Link
+              to="/contact-us"
+              className="hover:text-neutral-900 transition-colors whitespace-nowrap"
+            >
+              Contact_us
             </Link>
           </nav>
 
@@ -171,7 +190,7 @@ export default function Navbar({ onBookClick }: NavbarProps) {
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="lg:hidden border-t border-neutral-200 bg-white px-5 py-4 space-y-3 shadow-xl">
-          <div className="flex items-center justify-between pb-3 border-b border-neutral-100">
+          {/* <div className="flex items-center justify-between pb-3 border-b border-neutral-100">
             <div className="flex items-center gap-2 text-xs font-semibold text-neutral-600">
               <MapPin size={14} className="text-[#FF6B35]" />
               <span>City:</span>
@@ -191,22 +210,22 @@ export default function Navbar({ onBookClick }: NavbarProps) {
                 </button>
               ))}
             </div>
-          </div>
+          </div> */}
 
           <nav className="flex flex-col space-y-2 pt-1 text-sm font-medium text-neutral-700">
-            <button
-              onClick={() => handleNavClick("/services")}
+            <Link
+              to="/services"
               className="text-left py-2 hover:text-[#FF6B35]"
             >
               Services
-            </button>
-            <button
-              onClick={() => handleNavClick("#how-it-works")}
+            </Link>
+            <Link
+              to="/how-we-work"
               className="text-left py-2 hover:text-[#FF6B35]"
             >
               How It Works
-            </button>
-            <button
+            </Link>
+            {/* <button
               onClick={() => handleNavClick("#download")}
               className="text-left py-2 hover:text-[#FF6B35]"
             >
@@ -223,7 +242,27 @@ export default function Navbar({ onBookClick }: NavbarProps) {
               className="text-left py-2 hover:text-[#FF6B35]"
             >
               Frequently Asked Questions
-            </button>
+            </button> */}
+
+            <Link
+              to="/faq"
+              className="hover:text-neutral-900 transition-colors whitespace-nowrap"
+            >
+              FAQ
+            </Link>
+            <Link
+              to="/about-us"
+              className="hover:text-neutral-900 transition-colors whitespace-nowrap"
+            >
+              About_us
+            </Link>
+
+            <Link
+              to="/contact-us"
+              className="hover:text-neutral-900 transition-colors whitespace-nowrap"
+            >
+              Contact_us
+            </Link>
           </nav>
 
           <div className="pt-3 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-500">

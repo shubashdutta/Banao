@@ -10,6 +10,16 @@ export const HowWeWork = lazy(
   () => import("@/components/landingPage/howWeWorkPage"),
 );
 
+export const AboutsUs = lazy(
+  () => import("@/components/landingPage/about-usPage"),
+);
+
+export const FAQ = lazy(() => import("@/components/landingPage/faqPage"));
+
+export const Contactus = lazy(
+  () => import("@/components/landingPage/contactUsPage"),
+);
+
 export const DashboardPage = lazy(
   () => import("@/components/adminPanel/dashboard/DashboardPage"),
 );
