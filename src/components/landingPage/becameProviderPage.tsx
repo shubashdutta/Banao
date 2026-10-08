@@ -79,15 +79,14 @@ const PRO_PROVIDERS = [
 export default function ProvidersShowcasePage() {
   return (
     <div className="min-h-screen bg-[#faf9f6] text-slate-800 font-sans">
-      {/* 1. TOP HERO BANNER (Flat-lay background image with text overlaid on top) */}
       <div className="relative w-full bg-slate-900 py-28 md:py-36 px-6 overflow-hidden">
         <div className="absolute inset-0">
           <img
             src={BananoProviderimage}
             alt="Banao Pro Partners Header"
-            className="w-full h-full object-cover opacity-50"
+            className="w-full h-full object-cover opacity-65"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/70 via-transparent to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/99 via-transparent to-transparent"></div>
         </div>
 
         <div className="relative max-w-4xl mx-auto text-left space-y-4 pl-6 md:pl-16">
@@ -160,9 +159,9 @@ export default function ProvidersShowcasePage() {
           </div>
         </div>
 
-        <div className="bg-slate-900 text-white rounded-3xl py-12 px-6 grid grid-cols-1 md:grid-cols-3 gap-8 text-center shadow-lg">
+        <div className="bg-[#ff6b00] text-white rounded-3xl py-12 px-6 grid grid-cols-1 md:grid-cols-3 gap-8 text-center shadow-lg">
           <div>
-            <div className="text-3xl md:text-4xl font-extrabold text-[#ff6b00] mb-1">
+            <div className="text-3xl md:text-4xl font-extrabold text-white mb-1">
               <CountUp
                 end={500}
                 duration={2.5}
@@ -171,18 +170,18 @@ export default function ProvidersShowcasePage() {
                 scrollSpyOnce
               />
             </div>
-            <div className="text-xs text-slate-400">
+            <div className="text-xs text-orange-100 ">
               Active Independent Pros
             </div>
           </div>
           <div>
-            <div className="text-3xl md:text-4xl font-extrabold text-[#ff6b00] mb-1">
+            <div className="text-3xl md:text-4xl font-extrabold text-white mb-1">
               4.8★
             </div>
-            <div className="text-xs text-slate-400">Average Pro Rating</div>
+            <div className="text-xs text-orange-100 ">Average Pro Rating</div>
           </div>
           <div>
-            <div className="text-3xl md:text-4xl font-extrabold text-[#ff6b00] mb-1">
+            <div className="text-3xl md:text-4xl font-extrabold text-white mb-1">
               <CountUp
                 end={50000}
                 duration={2.5}
@@ -192,7 +191,7 @@ export default function ProvidersShowcasePage() {
                 scrollSpyOnce
               />
             </div>
-            <div className="text-xs text-slate-400">
+            <div className="text-xs text-orange-100 ">
               Successful Jobs Completed
             </div>
           </div>

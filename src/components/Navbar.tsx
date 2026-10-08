@@ -357,7 +357,7 @@ export default function Navbar() {
     { name: "Services", path: "/services" },
     { name: "How it Works", path: "/how-we-work" },
     { name: "For Pros", path: "/became-provider" },
-    { name: "About Us", path: "/about-us" },
+    // { name: "About Us", path: "/about-us" },
     { name: "Contact", path: "/contact-us" },
   ];
 

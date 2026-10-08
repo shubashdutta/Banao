@@ -285,10 +285,10 @@ export default function AboutUsPage() {
       </section>
 
       {/* 3. ANIMATED STATS BAR */}
-      <section className="bg-slate-900 text-white py-16 px-6 shadow-inner">
+      <section className="bg-[#ff6b00] text-white py-16 px-6 shadow-inner">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           <div className="p-4">
-            <div className="text-3xl md:text-5xl font-extrabold text-[#ff6b00] mb-2">
+            <div className="text-3xl md:text-5xl font-extrabold text-white mb-2">
               <CountUp
                 end={10000}
                 duration={2.5}
@@ -298,12 +298,12 @@ export default function AboutUsPage() {
                 scrollSpyOnce
               />
             </div>
-            <div className="text-xs md:text-sm font-medium text-slate-400">
+            <div className="text-xs md:text-sm font-medium text-orange-100 ">
               Happy Homeowners
             </div>
           </div>
           <div className="p-4">
-            <div className="text-3xl md:text-5xl font-extrabold text-[#ff6b00] mb-2">
+            <div className="text-3xl md:text-5xl font-extrabold text-white mb-2">
               <CountUp
                 end={500}
                 duration={2.5}
@@ -313,12 +313,12 @@ export default function AboutUsPage() {
                 scrollSpyOnce
               />
             </div>
-            <div className="text-xs md:text-sm font-medium text-slate-400">
+            <div className="text-xs md:text-sm font-medium text-orange-100 ">
               Verified Technicians
             </div>
           </div>
           <div className="p-4">
-            <div className="text-3xl md:text-5xl font-extrabold text-[#ff6b00] mb-2">
+            <div className="text-3xl md:text-5xl font-extrabold text-white mb-2">
               <CountUp
                 end={15}
                 duration={2}
@@ -327,15 +327,15 @@ export default function AboutUsPage() {
                 scrollSpyOnce
               />
             </div>
-            <div className="text-xs md:text-sm font-medium text-slate-400">
+            <div className="text-xs md:text-sm font-medium text-orange-100 ">
               Service Categories
             </div>
           </div>
           <div className="p-4">
-            <div className="text-3xl md:text-5xl font-extrabold text-[#ff6b00] mb-2">
+            <div className="text-3xl md:text-5xl font-extrabold text-white mb-2">
               4.8★
             </div>
-            <div className="text-xs md:text-sm font-medium text-slate-400">
+            <div className="text-xs md:text-sm font-medium text-orange-100 ">
               Average Customer Rating
             </div>
           </div>
