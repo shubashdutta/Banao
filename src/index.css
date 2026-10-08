@@ -1152,3 +1152,12 @@ div[class*="_buttonGroup_"] {
   padding: 4px 8px;
   border-radius: 4px;
 }
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}

@@ -20,6 +20,14 @@ export const Contactus = lazy(
   () => import("@/components/landingPage/contactUsPage"),
 );
 
+export const PageNotFound = lazy(
+  () => import("@/components/landingPage/404Page"),
+);
+
+export const BecameProvider = lazy(
+  () => import("@/components/landingPage/becameProviderPage"),
+);
+
 export const DashboardPage = lazy(
   () => import("@/components/adminPanel/dashboard/DashboardPage"),
 );

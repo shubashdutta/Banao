@@ -41,6 +41,7 @@ import HomeAllImage from "@/Assets/Image/BanaoHomeAll.png";
 import AppHomeImage from "@/Assets/Image/BanaoAppImage.png";
 
 import OverLayImage from "@/Assets/Image/OverLayImage.jpeg";
+import PartnersShowcase from "./components/landingPage/ourPartnerPage";
 
 // const services = [
 //   {
@@ -867,6 +868,8 @@ export default function App() {
       </section>
 
       {/* <Footer /> */}
+
+      <PartnersShowcase />
 
       {/* Interactive Booking Modal */}
       <BookingModal

@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
+import HowwewrkImage from "@/Assets/Image/HowWeWorkImage.png";
+
 interface StepItem {
   step: string;
   title: string;
@@ -189,43 +191,11 @@ export default function HowWeWorkCleanUI() {
         <div className="w-24 h-1 bg-[#FF6B00] mx-auto mt-6 rounded-full opacity-80"></div>
       </div>
 
-      {/* <div className="max-w-6xl mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center bg-white  p-8 md:p-12  transition-shadow">
-          <div className="rounded-2xl overflow-hidden shadow-md border border-gray-100 relative group">
-            <img
-              src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80"
-              alt="Professional team working"
-              className="w-full h-72 md:h-80 object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-          </div>
-
-          <div className="space-y-4">
-            <h3 className="text-xl font-bold text-gray-900">
-              Built on Trust & Transparency
-            </h3>
-            <p className="text-gray-600 text-sm md:text-base leading-relaxed">
-              At our platform, we follow a structured, transparent, and
-              efficient process to provide reliable home repair and maintenance
-              solutions for you. Starting from understanding your exact
-              requirements, we carefully match and verify qualified
-              professionals, manage scheduling seamlessly, and ensure adherence
-              to high service standards.
-            </p>
-            <p className="text-gray-600 text-sm md:text-base leading-relaxed">
-              Our approach emphasizes smooth execution, prompt arrival, and
-              absolute transparency with upfront pricing. We are committed to
-              delivering skilled experts who respect your time and contribute to
-              making your home maintenance completely hassle-free.
-            </p>
-          </div>
-        </div>
-      </div> */}
-
       <div className="w-full max-w-6xl mx-auto px-0 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center bg-white p-0 md:p-12 transition-shadow">
           <div className="w-full rounded-none md:rounded-2xl overflow-hidden shadow-none md:shadow-md border-y md:border border-gray-100 relative group">
             <img
-              src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80"
+              src={HowwewrkImage}
               alt="Professional team working"
               className="w-full h-64 md:h-80 object-cover group-hover:scale-105 transition-transform duration-500"
             />

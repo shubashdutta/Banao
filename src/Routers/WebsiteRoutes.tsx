@@ -2,10 +2,12 @@ import React from "react";
 import { Route } from "react-router-dom";
 import {
   AboutsUs,
+  BecameProvider,
   Contactus,
   FAQ,
   HowWeWork,
   LandingPage,
+  PageNotFound,
   ServicePage,
 } from "./RouterPath";
 import WebsiteLayout from "@/components/landingPage/webLayout";
@@ -29,6 +31,10 @@ const WebsiteRoutes = (
     <Route path="/faq" element={<FAQ />} />
 
     <Route path="/contact-us" element={<Contactus />} />
+
+    <Route path="/became-provider" element={<BecameProvider />} />
+
+    <Route path="*" element={<PageNotFound />} />
   </Route>
 );
 
